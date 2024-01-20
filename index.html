@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,38 +15,44 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-        }
-
-        h1 {
-            font-size: 4em;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #7cc484;
+            /* height: 100vh; */
         }
 
         nav {
-            margin-top: 20px;
+            width: 100%;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            background-color: #1d2c3e;
+            padding: 10px 0;
+            z-index: 1000;
         }
 
         nav a {
             text-decoration: none;
             color: #c44f37;
-            margin: 0 20px;
+            margin: 0 10px;
             font-size: 1.5em;
             font-weight: bold;
+        }
+
+        h1 {
+            font-size: 4em;
+            text-align: center;
+            letter-spacing: 0.1em;
+            color: #7cc484;
+            /* margin-top: 50px; */
         }
     </style>
 </head>
 <body>
-    <h1>BwithE</h1>
-
     <nav>
         <a href="https://github.com/bwithe">Home</a>
         <a href="https://github.com/BwithE?tab=repositories">Repositories</a>
         <a href="https://github.com/BwithE?tab=projects">Projects</a>
     </nav>
+
+    <h1>BwithE</h1>
 
 </body>
 </html>
