@@ -5,54 +5,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BwithE</title>
     <style>
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #c44f37; /* Orange */
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: center; /* Center the menu items */
+        }
+
+        li {
+            float: left;
+        }
+
+        li a {
+            display: block;
+            color: #7cc484; /* Light Green */
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        li a:hover {
+            background-color: #111;
+        }
+
         body {
             background-color: #1d2c3e;
             color: #a4c090;
             font-family: 'Arial', sans-serif;
             margin: 0;
-            padding: 0;
+            padding-top: 50px; /* Adjusted padding to provide space below the fixed menu */
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            /* height: 100vh; */
-        }
-
-        nav {
-            width: 100%;
-            text-align: center;
-            position: fixed;
-            top: 0;
-            background-color: #1d2c3e;
-            padding: 10px 0;
-            z-index: 1000;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: #c44f37;
-            margin: 0 10px;
-            font-size: 1.5em;
-            font-weight: bold;
+            height: 100vh;
         }
 
         h1 {
             font-size: 4em;
             text-align: center;
             letter-spacing: 0.1em;
-            color: #7cc484;
-            /* margin-top: 50px; */
+            color: #7cc484; /* Light Green */
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <nav>
-        <a href="https://github.com/bwithe">Home</a>
-        <a href="https://github.com/BwithE?tab=repositories">Repositories</a>
-        <a href="https://github.com/BwithE?tab=projects">Projects</a>
-    </nav>
 
-    <h1>BwithE</h1>
+<ul>
+  <li><a href="https://github.com/bwithe">Home</a></li>
+  <li><a href="https://github.com/BwithE?tab=repositories">Repositories</a></li>
+  <li><a href="https://github.com/BwithE?tab=projects">Projects</a></li>
+</ul>
+
+<h1>BwithE</h1>
 
 </body>
 </html>
