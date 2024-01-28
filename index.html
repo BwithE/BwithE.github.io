@@ -5,11 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BwithE</title>
     <style>
+        /* General Styles */
+        body {
+            background-color: #1d2c3e;
+            color: #a4c090;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-size: 4em;
+            text-align: center;
+            letter-spacing: 0.1em;
+            color: #7cc484; /* Light Green */
+            margin-top: 20px;
+        }
+
+        /* Navigation Styles */
         ul {
             list-style-type: none;
             margin: 0;
             padding: 0;
-            overflow: hidden;
             background-color: #c44f37; /* Orange */
             width: 100%;
             position: fixed;
@@ -36,38 +58,34 @@
             background-color: #111;
         }
 
-        body {
-            background-color: #1d2c3e;
-            color: #a4c090;
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding-top: 50px; /* Adjusted padding to provide space below the fixed menu */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
+        /* Media Query for Mobile Devices */
+        @media only screen and (max-width: 600px) {
+            li {
+                float: none;
+                width: 100%;
+            }
 
-        h1 {
-            font-size: 4em;
-            text-align: center;
-            letter-spacing: 0.1em;
-            color: #7cc484; /* Light Green */
-            margin-top: 20px;
+            li a {
+                padding: 12px;
+            }
+
+            h1 {
+                font-size: 3em;
+            }
         }
     </style>
 </head>
 <body>
 
 <ul>
-  <li><a href="https://github.com/bwithe">GitHub</a></li>
+  <li><a href="https://github.com/bwithe">Home</a></li>
   <li><a href="https://github.com/BwithE?tab=repositories">Repositories</a></li>
   <li><a href="https://github.com/BwithE?tab=projects">Projects</a></li>
 </ul>
 
-<h1>BwithE</h1>
-<p>This page is currently under construction, please check out my repositories as I find the time to fix this page.</p>
+<h1>Welcome!</h1>
+<p>While this page is under minor construction, please check out some of the projects I've been working on.</p>
+<p>One of my favorites is the <a href="https://bwithe.github.io/rpiap.html">Raspberry Pi Access Point</a>.</p>
 
 </body>
 </html>
