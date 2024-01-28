@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raspberry Pi WPA2 Access Point Configuration</title>
+    <style>
+        body {
+            background-color: #1d2c3e;
+            color: #a4c090;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding-top: 50px; /* Adjusted padding to provide space below the fixed menu */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: #c44f37; /* Orange */
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav {
+            display: flex;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav li {
+            margin: 0 15px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #7cc484; /* Light Green */
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        nav a:hover {
+            color: #fff; /* White */
+        }
+
+        h1 {
+            font-size: 2em;
+            text-align: center;
+            color: #7cc484; /* Light Green */
+            margin-top: 20px;
+        }
+
+        p {
+            font-size: 1em;
+            text-align: left;
+            margin-top: 10px;
+        }
+
+        code {
+            background-color: #333;
+            color: #7cc484;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav>
+        <li><a href="https://github.com/bwithe">GitHub</a></li>
+        <li><a href="https://github.com/BwithE?tab=repositories">Repositories</a></li>
+        <li><a href="https://github.com/BwithE?tab=projects">Projects</a></li>
+    </nav>
+</header>
+
+<h1>Raspberry Pi WPA2 Access Point Configuration Script</h1>
+
+<p>This Bash script facilitates the setup of a Raspberry Pi as a WPA2 Access Point. The script ensures that your Pi is up-to-date and applies all the necessary configurations to establish it as an access point.</p>
+
+<h2>Usage:</h2>
+
+<p>Create a local copy of the script:</p>
+
+<code>wget https://raw.githubusercontent.com/BwithE/rpi-wpa2/main/rpi-ap.sh</code>
+
+<p>Make the script executable:</p>
+
+<code>sudo chmod +x rpi-ap.sh</code>
+
+<p>Then run the script:</p>
+
+<code>sudo ./rpi-ap.sh</code> or <code>sudo bash rpi-ap.sh</code>
+
+<h2>Configuration:</h2>
+
+<p>The script prompts you for the following configuration options:</p>
+
+<ul>
+    <li><strong>SSID:</strong> Service Set Identifier for your access point.</li>
+    <li><strong>Passphrase:</strong> Password for the network.</li>
+    <li><strong>Channel:</strong> Configures the network to operate on either 2.4GHz or 5GHz.</li>
+    <li><strong>Wireless Card:</strong> Choose the wireless card to broadcast from (default is "wlan0").</li>
+    <li><strong>Number of IPs:</strong> Specify the number of users allowed to join the network (2-20).</li>
+    <li><strong>VPN Configuration (Optional):</strong> If desired, configure OPENVPN settings for VPN usage.</li>
+</ul>
+
+<p><strong>Note:</strong> Specify "wlan0" as your wireless card if you're not using a secondary external wireless card.</p>
+
+<h2>Process Overview:</h2>
+
+<ol>
+    <li><strong>User Input:</strong> Collects user-specified settings for the access point.</li>
+    <li><strong>VPN Configuration (Optional):</strong> If a VPN is chosen, the user is prompted to provide the VPN configuration file's full path.</li>
+    <li><strong>Channel Mode Determination:</strong> Determines the mode ("g" or "a") based on the user-specified channel.</li>
+    <li><strong>Display User Input:</strong> Displays a summary of the specified settings.</li>
+    <li><strong>Installation and Configuration:</strong> Updates and installs necessary applications for access point functionality. Configures network interfaces, IP forwarding, and iptables rules for NAT.</li>
+    <li><strong>VPN Configuration (if specified):</strong> Applies additional configurations for VPN settings if specified.</li>
+    <li><strong>Service Start and System Reboot:</strong> Starts required services (hostapd, dnsmasq, ssh) and enables them to start on boot. Initiates a system reboot after applying all configurations.</li>
+</ol>
+
+<p>Upon completion, the Raspberry Pi will reboot and start broadcasting as an access point. Please review the script and its comments before execution, as it involves network configuration and system-level changes.</p>
+
+
+</body>
+</html>
+
