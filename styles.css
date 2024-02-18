@@ -1,93 +1,94 @@
 body {
-  font-family: 'Courier New', Courier, monospace;
-  background-color: #272932; /* Dark background */
-  color: #fdf500; /* Light yellow text */
-  margin: 0;
-  padding: 0;
-  position: relative; /* Required for positioning pseudo-elements */
-}
-
-.header {
-  text-align: center;
-  padding: 50px 0;
-}
-
-.repositories {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-.repository {
-  border: 2px solid #fdf500; /* Light yellow border */
-  margin-bottom: 20px;
-  padding: 20px;
-  background-color: rgba(0, 0, 0, 0.5); /* Transparent background */
-}
-
-.repository:hover {
-  transform: translateY(-5px); /* Add hover effect */
-}
-
-.repository h3 {
-  margin-top: 0;
-  font-size: 1.2em; /* Increase font size */
-}
-
-a {
-  color: #37ebf3; /* Light blue links */
-  text-decoration: none;
-}
-
-.footer {
-  text-align: center;
-  padding: 20px 0;
-  font-size: 0.8em; /* Decrease font size */
-}
-
-/* Create a class for the streaks */
-.streak {
-  position: absolute;
-  top: 0;
-  width: 2px; /* Width of the streaks */
-  background-color: #710000; /* Dark red color */
-}
-
-/* Styling for each streak */
-.streak:nth-of-type(1) {
-  left: 5%; /* Adjust position as needed */
-  height: 100%; /* Full height */
-}
-
-.streak:nth-of-type(2) {
-  left: 15%; /* Adjust position as needed */
-  height: 100%; /* Full height */
-}
-
-.streak:nth-of-type(3) {
-  left: 25%; /* Adjust position as needed */
-  height: 100%; /* Full height */
-}
-
-/* CSS to make profile photo circular */
-.profile-picture {
-  border-radius: 50%; /* Makes the profile picture circular */
-  width: 150px; /* Adjust the size as needed */
-  height: 150px; /* Adjust the size as needed */
-  object-fit: cover; /* Ensure the entire image is visible within the circular frame */
-}
-
-/* CSS to make the webpage responsive */
-@media only screen and (max-width: 768px) {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #272932; /* Dark background */
+    color: #fdf500; /* Light yellow text */
+    margin: 0;
+    padding: 0;
+    position: relative; /* Required for positioning pseudo-elements */
+  }
+  
+  .header {
+    text-align: center;
+    padding: 50px 0;
+  }
+  
   .repositories {
-    padding: 0 10px; /* Adjust padding for smaller screens */
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
   }
-
+  
   .repository {
-    padding: 15px; /* Adjust padding for smaller screens */
+    border: 2px solid #fdf500; /* Light yellow border */
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.5); /* Transparent background */
   }
-
+  
+  .repository:hover {
+    transform: translateY(-5px); /* Add hover effect */
+  }
+  
+  .repository h3 {
+    margin-top: 0;
+    font-size: 1.2em; /* Increase font size */
+  }
+  
+  a {
+    color: #37ebf3; /* Light blue links */
+    text-decoration: none;
+  }
+  
   .footer {
-    padding: 15px 0; /* Adjust padding for smaller screens */
+    text-align: center;
+    padding: 20px 0;
+    font-size: 0.8em; /* Decrease font size */
   }
-}
+  
+  /* Create a class for the streaks */
+  .streak {
+    position: absolute;
+    top: 0;
+    width: 2px; /* Width of the streaks */
+    background-color: #710000; /* Dark red color */
+  }
+  
+  /* Styling for each streak */
+  .streak:nth-of-type(1) {
+    left: 5%; /* Adjust position as needed */
+    height: 100%; /* Full height */
+  }
+  
+  .streak:nth-of-type(2) {
+    left: 15%; /* Adjust position as needed */
+    height: 100%; /* Full height */
+  }
+  
+  .streak:nth-of-type(3) {
+    left: 25%; /* Adjust position as needed */
+    height: 100%; /* Full height */
+  }
+  
+  /* CSS to make profile photo circular */
+  .profile-picture {
+    border-radius: 50%; /* Makes the profile picture circular */
+    width: 150px; /* Adjust the size as needed */
+    height: 150px; /* Adjust the size as needed */
+    object-fit: cover; /* Ensure the entire image is visible within the circular frame */
+  }
+  
+  /* CSS to make the webpage responsive */
+  @media only screen and (max-width: 768px) {
+    .repositories {
+      padding: 0 10px; /* Adjust padding for smaller screens */
+    }
+  
+    .repository {
+      padding: 15px; /* Adjust padding for smaller screens */
+    }
+  
+    .footer {
+      padding: 15px 0; /* Adjust padding for smaller screens */
+    }
+  }
+  
