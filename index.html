@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BwithE</title>
-  <link rel="stylesheet" href="styles.css"> <!-- Link to CSS file -->
+  <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
 </head>
 <body>
   <header class="header">
@@ -22,7 +22,7 @@
   </footer>
 
   <script>
-    const pinnedRepositories = ['rpi-ap', 'shelk', 'docker-builds', 'nmap-db']; // Update this array with pinned repository names
+    const pinnedRepositories = ['rpi-ap', 'shelk', 'docker-builds', 'nmap-db']; // Update this array with your pinned repository names
   
     Promise.all(pinnedRepositories.map(repoName =>
       fetch(`https://api.github.com/repos/BwithE/${repoName}`)
