@@ -1,89 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BwithE</title>
-    <style>
-        /* General Styles */
-        body {
-            background-color: #1d2c3e;
-            color: #a4c090;
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
-
-        h1 {
-            font-size: 4em;
-            text-align: center;
-            letter-spacing: 0.1em;
-            color: #7cc484; /* Light Green */
-            margin-top: 20px;
-        }
-
-        /* Navigation Styles */
-        ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            background-color: #c44f37; /* Orange */
-            width: 100%;
-            position: fixed;
-            top: 0;
-            z-index: 1000;
-            display: flex;
-            justify-content: center; /* Center the menu items */
-        }
-
-        li {
-            float: left;
-        }
-
-        li a {
-            display: block;
-            color: #7cc484; /* Light Green */
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        li a:hover {
-            background-color: #111;
-        }
-
-        /* Media Query for Mobile Devices */
-        @media only screen and (max-width: 600px) {
-            li {
-                float: none;
-                width: 100%;
-            }
-
-            li a {
-                padding: 12px;
-            }
-
-            h1 {
-                font-size: 3em;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BwithE</title>
+  <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
 </head>
 <body>
+  <header class="header">
+    <h1>Welcome to my GitHub Page</h1>
+    <p>Explore my repositories and projects below</p>
+  </header>
 
-<ul>
-    <li><a href="https://github.com/bwithe">GitHub</a></li>
-    <li><a href="https://github.com/BwithE?tab=repositories">Repositories</a></li>
-</ul>
+  <section class="repositories" id="repositories">
+    <h2>Repositories</h2>
+    <!-- Repositories will be dynamically added here -->
+  </section>
 
-<h1>Welcome!</h1>
-<p>While this page is under minor construction, please check out some of the projects I've been working on.</p>
+  <footer class="footer">
+    <!-- <p>&copy; 2024 BwithE. All rights reserved.</p> -->
+  </footer>
 
+  <script>
+    const pinnedRepositories = ['rpi-ap', 'shelk', 'docker-builds', 'nmap-db']; // Update this array with your pinned repository names
+  
+    Promise.all(pinnedRepositories.map(repoName =>
+      fetch(`https://api.github.com/repos/BwithE/${repoName}`)
+        .then(response => response.json())
+    ))
+    .then(repositories => {
+      const repositoriesSection = document.getElementById('repositories');
+      const repositoriesHTML = repositories.map(repo => {
+        return `
+          <div class="repository">
+            <h3><a href="${repo.html_url}" target="_blank">${repo.name}</a></h3>
+            <p>${repo.description}</p>
+          </div>
+        `;
+      }).join('');
+      repositoriesSection.innerHTML = repositoriesHTML;
+    })
+    .catch(error => console.error('Error fetching repositories:', error));
+  
+    fetch('https://api.github.com/users/BwithE')
+      .then(response => response.json())
+      .then(data => {
+        const profilePicture = data.avatar_url;
+        const header = document.querySelector('.header');
+        header.innerHTML += `<img src="${profilePicture}" alt="Profile Picture" class="profile-picture">`;
+      })
+      .catch(error => console.error('Error fetching profile information:', error));
+  </script>
+  
 </body>
 </html>
