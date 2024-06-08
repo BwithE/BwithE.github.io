@@ -22,7 +22,7 @@
   </footer>
 
   <script>
-    const pinnedRepositories = ['rpi-ap', 'shelk', 'deathstar', 'nmap-db']; // Update this array with your pinned repository names
+    const pinnedRepositories = ['deathstar', 'rpi-ap', 'shelk', 'nmap-db']; // Update this array with your pinned repository names
   
     Promise.all(pinnedRepositories.map(repoName =>
       fetch(`https://api.github.com/repos/BwithE/${repoName}`)
