@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BwithE</title>
-  <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="header">
-    <h1>Welcome!</h1>
+    <h1>Welcome to My GitHub</h1>
     <p>Explore my favorite repositories below</p>
   </header>
 
@@ -18,12 +18,12 @@
   </section>
 
   <footer class="footer">
-    <!-- <p>&copy; 2024 BwithE. All rights reserved.</p> -->
+    <p>&copy; 2024 BwithE. All rights reserved.</p>
   </footer>
 
   <script>
-    const pinnedRepositories = ['deathstar', 'rpi-ap', 'shelk', 'pentest']; // Update this array with your pinned repository names
-  
+    const pinnedRepositories = ['deathstar', 'rpi-ap', 'shelk', 'pentest'];
+
     Promise.all(pinnedRepositories.map(repoName =>
       fetch(`https://api.github.com/repos/BwithE/${repoName}`)
         .then(response => response.json())
@@ -41,7 +41,7 @@
       repositoriesSection.innerHTML = repositoriesHTML;
     })
     .catch(error => console.error('Error fetching repositories:', error));
-  
+
     fetch('https://api.github.com/users/BwithE')
       .then(response => response.json())
       .then(data => {
@@ -51,6 +51,5 @@
       })
       .catch(error => console.error('Error fetching profile information:', error));
   </script>
-  
 </body>
 </html>
