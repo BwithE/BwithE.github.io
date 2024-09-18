@@ -5,8 +5,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BwithE</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden; /* Prevent scrollbars */
+      background-color: #272932; /* Dark background */
+      color: #fdf500; /* Light yellow text */
+    }
+
+    .header {
+      position: relative;
+      z-index: 10; /* Ensure text is above canvas */
+      text-align: center;
+      padding: 50px 0;
+    }
+
+    .repositories {
+      position: relative;
+      z-index: 10; /* Ensure text is above canvas */
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .repository {
+      border: 2px solid #fd00db; /* Light border */
+      margin-bottom: 20px;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.5); /* Transparent background */
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1; /* Behind everything else */
+    }
+  </style>
 </head>
 <body>
+  <canvas id="matrixCanvas"></canvas>
   <header class="header">
     <h1>Welcome!</h1>
     <p>Explore my favorite repositories below</p>
@@ -21,7 +61,7 @@
 
   <script>
     const pinnedRepositories = ['deathstar', 'rpi-ap', 'shelk', 'pentest']; // Update this array with pinned repository names
-  
+
     Promise.all(pinnedRepositories.map(repoName =>
       fetch(`https://api.github.com/repos/BwithE/${repoName}`)
         .then(response => response.json())
@@ -39,7 +79,7 @@
       repositoriesSection.innerHTML = repositoriesHTML;
     })
     .catch(error => console.error('Error fetching repositories:', error));
-  
+
     fetch('https://api.github.com/users/BwithE')
       .then(response => response.json())
       .then(data => {
@@ -48,7 +88,38 @@
         header.innerHTML += `<img src="${profilePicture}" alt="Profile Picture" class="profile-picture">`;
       })
       .catch(error => console.error('Error fetching profile information:', error));
+
+    // Matrix effect
+    const canvas = document.getElementById('matrixCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const fontSize = 10;
+    const columns = Math.floor(canvas.width / fontSize);
+    const drops = Array.from({ length: columns }).fill(1); // Drop positions
+
+    function draw() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; // Slightly transparent black
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = '#a000fd'; // purple color for letters
+      ctx.font = `${fontSize}px monospace`;
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = characters[Math.floor(Math.random() * characters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        // Reset drop position if it goes off the screen
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0; // Reset to top
+        }
+        drops[i]++; // Increment the drop's position
+      }
+    }
+
+    setInterval(draw, 35); // Draw the effect
   </script>
-  
 </body>
 </html>
