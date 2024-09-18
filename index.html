@@ -17,42 +17,22 @@
       position: relative;
       z-index: 10; /* Ensure text is above canvas */
       text-align: center;
-      padding: 20px 0; /* Reduced padding */
+      padding: 50px 0;
     }
 
     .repositories {
+      position: relative;
+      z-index: 10; /* Ensure text is above canvas */
       max-width: 800px;
       margin: 0 auto;
       padding: 0 20px;
-      z-index: 10; /* Ensure text is above canvas */
-      position: relative; /* Required for stacking context */
     }
 
     .repository {
-      border: 2px solid #fdf500; /* Light yellow border */
+      border: 2px solid #fd00db; /* Light border */
       margin-bottom: 20px;
       padding: 20px;
       background-color: rgba(0, 0, 0, 0.5); /* Transparent background */
-    }
-
-    .repository:hover {
-      transform: translateY(-5px); /* Add hover effect */
-    }
-
-    .repository h3 {
-      margin-top: 0;
-      font-size: 1.2em; /* Increase font size */
-    }
-
-    a {
-      color: #37ebf3; /* Light blue links */
-      text-decoration: none;
-    }
-
-    .footer {
-      text-align: center;
-      padding: 20px 0;
-      font-size: 0.8em; /* Decrease font size */
     }
 
     canvas {
@@ -112,31 +92,19 @@
     // Matrix effect
     const canvas = document.getElementById('matrixCanvas');
     const ctx = canvas.getContext('2d');
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
 
-    const characters = 'ECCLESIASTES 1'; // Replace characters with desired text
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     const fontSize = 10;
-    const drops = []; // Drop positions
-
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      // Initialize drops to start at random positions within the height of the canvas
-      const columns = Math.floor(canvas.width / fontSize);
-      drops.length = columns; // Adjust the length of drops to match columns
-      for (let i = 0; i < columns; i++) {
-        drops[i] = Math.random() * (canvas.height / fontSize); // Random starting position
-      }
-    }
-
-    resizeCanvas(); // Initial canvas size
-    window.addEventListener('resize', resizeCanvas); // Resize on window change
+    const columns = Math.floor(canvas.width / fontSize);
+    const drops = Array.from({ length: columns }).fill(1); // Drop positions
 
     function draw() {
       ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; // Slightly transparent black
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.fillStyle = '#a000fd'; // Purple color for letters
+      ctx.fillStyle = '#a000fd'; // purple color for letters
       ctx.font = `${fontSize}px monospace`;
 
       for (let i = 0; i < drops.length; i++) {
@@ -153,6 +121,5 @@
 
     setInterval(draw, 35); // Draw the effect
   </script>
-  
 </body>
 </html>
