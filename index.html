@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BwithE</title>
-  <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="header">
@@ -14,15 +14,13 @@
 
   <section class="repositories" id="repositories">
     <h2>Repositories</h2>
-    <!-- Repositories will be dynamically added here -->
   </section>
 
   <footer class="footer">
-    <!-- <p>&copy; 2024 BwithE. All rights reserved.</p> -->
   </footer>
 
   <script>
-    const pinnedRepositories = ['deathstar', 'rpi-ap', 'shelk', 'pentest']; // Update this array with your pinned repository names
+    const pinnedRepositories = ['deathstar', 'rpi-ap', 'shelk', 'pentest']; // Update this array with pinned repository names
   
     Promise.all(pinnedRepositories.map(repoName =>
       fetch(`https://api.github.com/repos/BwithE/${repoName}`)
