@@ -142,7 +142,7 @@
         setInterval(draw, 33);
 
         // GitHub API Integration
-        const pinnedRepositories = ['rpi-ap', 'shelk', 'uppy', 'deathstar', 'fistfight'];
+        const pinnedRepositories = ['rpi-ap', 'shelk', 'uppy', 'deathstar'];
 
         Promise.all(pinnedRepositories.map(repoName =>
             fetch(`https://api.github.com/repos/BwithE/${repoName}`)
