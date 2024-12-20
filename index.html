@@ -1,125 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BwithE</title>
-  <link rel="stylesheet" href="styles.css">
-  <style>
-    body {
-      margin: 0;
-      overflow: visible; /* Prevent scrollbars */
-      background-color: #272932; /* Dark background */
-      color: #fdf500; /* Light yellow text */
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BwithE</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: black;
+            overflow-x: hidden;
+            font-family: 'Courier New', Courier, monospace;
+            color: #fff;
+        }
 
-    .header {
-      position: relative;
-      z-index: 10; /* Ensure text is above canvas */
-      text-align: center;
-      padding: 50px 0;
-    }
+        #matrix {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
 
-    .repositories {
-      position: relative;
-      z-index: 10; /* Ensure text is above canvas */
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
+        .header {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 50px 0;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
 
-    .repository {
-      border: 2px solid #fd00db; /* Light border */
-      margin-bottom: 20px;
-      padding: 20px;
-      background-color: rgba(0, 0, 0, 0.5); /* Transparent background */
-    }
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 3px solid #fd00db;
+            margin-top: 20px;
+        }
 
-    canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1; /* Behind everything else */
-    }
-  </style>
+        .repositories {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .repository {
+            border: 2px solid #fd00db;
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        .repository:hover {
+            transform: translateY(-5px);
+        }
+
+        .repository a {
+            color: #fff;
+            text-decoration: none;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        .repository a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .repositories {
+                padding: 20px;
+            }
+            
+            .repository {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+        }
+
+        h1, h2, h3 {
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+    </style>
 </head>
 <body>
-  <canvas id="matrixCanvas"></canvas>
-  <header class="header">
-    <h1>Welcome!</h1>
-    <p>Explore my favorite repositories below</p>
-  </header>
+    <canvas id="matrix"></canvas>
+    
+    <header class="header">
+        <h1>Welcome!</h1>
+        <p>Explore my favorite repositories below</p>
+    </header>
 
-  <section class="repositories" id="repositories">
-    <h2>Repositories</h2>
-  </section>
+    <section class="repositories" id="repositories">
+        <h2>Repositories</h2>
+    </section>
 
-  <footer class="footer">
-  </footer>
+    <script>
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
 
-  <script>
-    const pinnedRepositories = ['deathstar', 'rpi-ap', 'shelk', 'pentest']; // Update this array with pinned repository names
-
-    Promise.all(pinnedRepositories.map(repoName =>
-      fetch(`https://api.github.com/repos/BwithE/${repoName}`)
-        .then(response => response.json())
-    ))
-    .then(repositories => {
-      const repositoriesSection = document.getElementById('repositories');
-      const repositoriesHTML = repositories.map(repo => {
-        return `
-          <div class="repository">
-            <h3><a href="${repo.html_url}" target="_blank">${repo.name}</a></h3>
-            <p>${repo.description}</p>
-          </div>
-        `;
-      }).join('');
-      repositoriesSection.innerHTML = repositoriesHTML;
-    })
-    .catch(error => console.error('Error fetching repositories:', error));
-
-    fetch('https://api.github.com/users/BwithE')
-      .then(response => response.json())
-      .then(data => {
-        const profilePicture = data.avatar_url;
-        const header = document.querySelector('.header');
-        header.innerHTML += `<img src="${profilePicture}" alt="Profile Picture" class="profile-picture">`;
-      })
-      .catch(error => console.error('Error fetching profile information:', error));
-
-    // Matrix effect
-    const canvas = document.getElementById('matrixCanvas');
-    const ctx = canvas.getContext('2d');
-    canvas.height = window.innerHeight;
-    canvas.width = window.innerWidth;
-
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    const fontSize = 10;
-    const columns = Math.floor(canvas.width / fontSize);
-    const drops = Array.from({ length: columns }).fill(1); // Drop positions
-
-    function draw() {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; // Slightly transparent black
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.fillStyle = '#a000fd'; // purple color for letters
-      ctx.font = `${fontSize}px monospace`;
-
-      for (let i = 0; i < drops.length; i++) {
-        const text = characters[Math.floor(Math.random() * characters.length)];
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-        // Reset drop position if it goes off the screen
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-          drops[i] = 0; // Reset to top
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         }
-        drops[i]++; // Increment the drop's position
-      }
-    }
+        resize();
+        window.addEventListener('resize', resize);
 
-    setInterval(draw, 35); // Draw the effect
-  </script>
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
+        const fontSize = 14;
+        const columns = Math.floor(canvas.width / fontSize);
+        const drops = Array(columns).fill(1);
+
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#9932CC';
+            ctx.font = `${fontSize}px monospace`;
+
+            for (let i = 0; i < drops.length; i++) {
+                const char = chars[Math.floor(Math.random() * chars.length)];
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+
+                ctx.fillText(char, x, y);
+
+                if (y > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(draw, 33);
+
+        // GitHub API Integration
+        const pinnedRepositories = ['deathstar', 'rpi-ap', 'shelk', 'pentest'];
+
+        Promise.all(pinnedRepositories.map(repoName =>
+            fetch(`https://api.github.com/repos/BwithE/${repoName}`)
+                .then(response => response.json())
+        ))
+        .then(repositories => {
+            const repositoriesSection = document.getElementById('repositories');
+            const repositoriesHTML = repositories.map(repo => {
+                return `
+                    <div class="repository">
+                        <h3><a href="${repo.html_url}" target="_blank">${repo.name}</a></h3>
+                        <p>${repo.description || 'No description available'}</p>
+                    </div>
+                `;
+            }).join('');
+            repositoriesSection.innerHTML += repositoriesHTML;
+        })
+        .catch(error => console.error('Error fetching repositories:', error));
+
+        fetch('https://api.github.com/users/BwithE')
+            .then(response => response.json())
+            .then(data => {
+                const profilePicture = data.avatar_url;
+                const header = document.querySelector('.header');
+                header.innerHTML += `<img src="${profilePicture}" alt="Profile Picture" class="profile-picture">`;
+            })
+            .catch(error => console.error('Error fetching profile information:', error));
+    </script>
 </body>
-</html>
+</html> 
