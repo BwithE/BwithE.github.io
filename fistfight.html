@@ -228,5 +228,30 @@
            isPlayerTurn = true;
            updateHealth();
        }
+
+       function showMessage(message) {
+           clearTimeout(messageTimeout);
+           const messageElement = document.getElementById('battle-message');
+           messageElement.textContent = message;
+           messageElement.style.display = 'block';
+           
+           const hideMessage = (e) => {
+               e.preventDefault(); // Prevent any default behavior
+               messageElement.style.display = 'none';
+               document.removeEventListener('keydown', handleKeyPress);
+               document.removeEventListener('touchend', hideMessage);
+               document.removeEventListener('click', hideMessage);
+           };
+
+           const handleKeyPress = (e) => {
+               if (e.key === 'Enter') {
+                   hideMessage(e);
+               }
+           };
+
+           document.addEventListener('keydown', handleKeyPress);
+           document.addEventListener('touchend', hideMessage);
+           document.addEventListener('click', hideMessage);
+       }
    </script>
 </html>
