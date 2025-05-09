@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🚗 Swipe Traffic Dodge</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body {
+      margin: 0;
+      overflow: hidden;
+      background: #111;
+      font-family: sans-serif;
+    }
+    #game {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: #222;
+    }
+    .car, .obstacle {
+      position: absolute;
+      font-size: 3em;
+      transition: left 0.2s;
+    }
+    .car {
+      bottom: 10%;
+      left: 40%;
+    }
+    .obstacle {
+      top: -3em;
+    }
+    #score {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: white;
+      font-size: 1.2em;
+    }
+    #gameover {
+      position: absolute;
+      top: 40%;
+      width: 100%;
+      text-align: center;
+      font-size: 2em;
+      color: white;
+      display: none;
+    }
+    #restartBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1em;
+      background: #ff4444;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="game">
+    <div id="score">Score: 0</div>
+    <div id="gameover">
+      💥 Game Over!<br>
+      <button id="restartBtn">🔄 Restart</button>
+    </div>
+    <div class="car" id="player">🚗</div>
+  </div>
+
+  <script>
+    const game = document.getElementById("game");
+    const player = document.getElementById("player");
+    const scoreDisplay = document.getElementById("score");
+    const gameOverDisplay = document.getElementById("gameover");
+    const restartBtn = document.getElementById("restartBtn");
+
+    const lanes = [20, 40, 60]; // % positions
+    let currentLane = 1; // start in center
+    let score = 0;
+    let gameRunning = true;
+
+    function movePlayer(laneIndex) {
+      currentLane = Math.max(0, Math.min(2, laneIndex));
+      player.style.left = lanes[currentLane] + "%";
+    }
+
+    function spawnObstacle() {
+      if (!gameRunning) return;
+      const obs = document.createElement("div");
+      obs.className = "obstacle";
+      obs.textContent = "🚙";
+      const lane = Math.floor(Math.random() * 3);
+      obs.style.left = lanes[lane] + "%";
+      game.appendChild(obs);
+
+      let pos = -60;
+      const speed = 5 + score * 0.1;
+
+      const move = () => {
+        if (!gameRunning) return;
+        pos += speed;
+        obs.style.top = pos + "px";
+
+        const carRect = player.getBoundingClientRect();
+        const obsRect = obs.getBoundingClientRect();
+        if (
+          obsRect.bottom > carRect.top &&
+          obsRect.top < carRect.bottom &&
+          Math.abs(obsRect.left - carRect.left) < 10
+        ) {
+          gameOver();
+        }
+
+        if (pos < window.innerHeight) {
+          requestAnimationFrame(move);
+        } else {
+          obs.remove();
+          score++;
+          scoreDisplay.textContent = "Score: " + score;
+        }
+      };
+      move();
+    }
+
+    function gameOver() {
+      gameRunning = false;
+      gameOverDisplay.style.display = "block";
+    }
+
+    // Restart game on button click
+    restartBtn.addEventListener("click", () => {
+      location.reload();
+    });
+
+    // Swipe detection
+    let touchStartX = null;
+
+    game.addEventListener("touchstart", e => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    game.addEventListener("touchend", e => {
+      if (!touchStartX) return;
+      const touchEndX = e.changedTouches[0].screenX;
+      const diff = touchEndX - touchStartX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) movePlayer(currentLane + 1);
+        else movePlayer(currentLane - 1);
+      }
+      touchStartX = null;
+    });
+
+    // Start game
+    movePlayer(currentLane);
+    setInterval(() => {
+      if (gameRunning) spawnObstacle();
+    }, 1200);
+  </script>
+</body>
+</html>
