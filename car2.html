@@ -19,16 +19,16 @@ html, body {
   position: relative;
   width: 100vw;
   height: 100vh;
-  background: linear-gradient(#222, #111);
+  background: #222;
 }
 
-/* Lane visuals */
+/* Lanes */
 .lane {
   position: absolute;
   top: 0;
   bottom: 0;
   width: 33.33%;
-  border-left: 1px dashed rgba(255,255,255,0.1);
+  border-left: 1px dashed rgba(255,255,255,0.15);
 }
 .lane:nth-child(1) { left: 0; }
 .lane:nth-child(2) { left: 33.33%; }
@@ -47,8 +47,8 @@ html, body {
 
 #score {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: 10px;
+  left: 10px;
   color: white;
   font-size: 1.2rem;
 }
@@ -59,7 +59,6 @@ html, body {
   display: none;
   background: rgba(0,0,0,0.7);
   color: white;
-  text-align: center;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -74,26 +73,6 @@ html, body {
   color: white;
   border: none;
   border-radius: 14px;
-}
-
-/* On-screen controls */
-#controls {
-  position: absolute;
-  bottom: 10px;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 20px;
-}
-
-.ctrl-btn {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  font-size: 2rem;
-  background: rgba(255,255,255,0.15);
-  color: white;
-  border: none;
 }
 </style>
 </head>
@@ -112,11 +91,6 @@ html, body {
   </div>
 
   <div class="car" id="player">🚗</div>
-
-  <div id="controls">
-    <button class="ctrl-btn" id="leftBtn">⬅️</button>
-    <button class="ctrl-btn" id="rightBtn">➡️</button>
-  </div>
 </div>
 
 <script>
@@ -126,49 +100,53 @@ const scoreDisplay = document.getElementById("score");
 const gameOverDisplay = document.getElementById("gameover");
 const restartBtn = document.getElementById("restartBtn");
 
-const leftBtn = document.getElementById("leftBtn");
-const rightBtn = document.getElementById("rightBtn");
-
-const lanes = [16, 50, 83];
-const obstacleEmojis = ["🚙","🚓","🚕","🚚"];
+const lanes = [16, 50, 83]; // % positions
+const obstacles = ["🚙", "🚕", "🚓", "🚚"];
 
 let currentLane = 1;
 let score = 0;
+let speed = 4; // starting speed
 let gameRunning = true;
 
+// Move player
 function movePlayer(lane) {
   currentLane = Math.max(0, Math.min(2, lane));
   player.style.left = `calc(${lanes[currentLane]}% - 1.5rem)`;
 }
 
+// Spawn obstacle
 function spawnObstacle() {
   if (!gameRunning) return;
 
   const obs = document.createElement("div");
   obs.className = "obstacle";
-  obs.textContent = obstacleEmojis[Math.floor(Math.random()*obstacleEmojis.length)];
+  obs.textContent = obstacles[Math.floor(Math.random() * obstacles.length)];
+
   const lane = Math.floor(Math.random() * 3);
   obs.style.left = `calc(${lanes[lane]}% - 1.5rem)`;
   obs.style.top = "-60px";
+
   game.appendChild(obs);
 
   let pos = -60;
-  const speed = 4 + score * 0.15;
 
   function move() {
     if (!gameRunning) return;
+
     pos += speed;
     obs.style.top = pos + "px";
 
-    const a = player.getBoundingClientRect();
-    const b = obs.getBoundingClientRect();
+    const carRect = player.getBoundingClientRect();
+    const obsRect = obs.getBoundingClientRect();
 
+    // Collision check
     if (
-      b.bottom > a.top &&
-      b.top < a.bottom &&
-      Math.abs(b.left - a.left) < 40
+      obsRect.bottom > carRect.top &&
+      obsRect.top < carRect.bottom &&
+      Math.abs(obsRect.left - carRect.left) < 40
     ) {
       gameOver();
+      return;
     }
 
     if (pos < window.innerHeight) {
@@ -176,39 +154,64 @@ function spawnObstacle() {
     } else {
       obs.remove();
       score++;
+      speed += 0.3; // 🔥 SPEED UP AFTER EACH PASS
       scoreDisplay.textContent = "Score: " + score;
     }
   }
+
   move();
 }
 
+// Game over
 function gameOver() {
   gameRunning = false;
-  game.style.transform = "shake(0.3s)";
   gameOverDisplay.style.display = "flex";
 }
 
+// Restart
 restartBtn.onclick = () => location.reload();
 
-// Touch swipe
-let startX = null;
-game.addEventListener("touchstart", e => startX = e.touches[0].clientX);
-game.addEventListener("touchend", e => {
-  if (startX === null) return;
-  const diff = e.changedTouches[0].clientX - startX;
-  if (Math.abs(diff) > 40) {
-    diff > 0 ? movePlayer(currentLane + 1) : movePlayer(currentLane - 1);
-  }
-  startX = null;
+/* ---------- CONTROLS ---------- */
+
+// Swipe controls (mobile)
+let touchStartX = null;
+
+game.addEventListener("touchstart", e => {
+  touchStartX = e.touches[0].clientX;
 });
 
-// Buttons
-leftBtn.onclick = () => movePlayer(currentLane - 1);
-rightBtn.onclick = () => movePlayer(currentLane + 1);
+game.addEventListener("touchend", e => {
+  if (touchStartX === null) return;
+  const diff = e.changedTouches[0].clientX - touchStartX;
 
-// Start
+  if (Math.abs(diff) > 40) {
+    diff > 0
+      ? movePlayer(currentLane + 1)
+      : movePlayer(currentLane - 1);
+  }
+
+  touchStartX = null;
+});
+
+// Keyboard controls (desktop)
+document.addEventListener("keydown", e => {
+  if (!gameRunning) return;
+
+  if (e.key === "ArrowLeft") {
+    movePlayer(currentLane - 1);
+  }
+  if (e.key === "ArrowRight") {
+    movePlayer(currentLane + 1);
+  }
+});
+
+/* ---------- START GAME ---------- */
+
 movePlayer(currentLane);
-setInterval(() => gameRunning && spawnObstacle(), 1000);
+
+setInterval(() => {
+  if (gameRunning) spawnObstacle();
+}, 1000);
 </script>
 </body>
 </html>
