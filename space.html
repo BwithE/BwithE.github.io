@@ -1,247 +1,265 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Emoji Shooter</title>
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            background: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            font-family: 'Courier New', monospace;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+<title>Space Emoji Shooter</title>
 
-        #gameContainer {
-            position: relative;
-            width: 800px;
-            height: 600px;
-            border: 2px solid #333;
-            overflow: hidden;
-        }
+<style>
+    * {
+        touch-action: none;
+    }
 
-        .player {
-            position: absolute;
-            font-size: 2em;
-            transform: translateX(-50%);
-            user-select: none;
-        }
+    body {
+        margin: 0;
+        background: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-family: monospace;
+        color: white;
+    }
 
-        .laser {
-            position: absolute;
-            color: #ff0;
-            font-size: 1.5em;
-            transform: translateX(-50%);
-            user-select: none;
-        }
+    #gameContainer {
+        position: relative;
+        width: 100vw;
+        max-width: 420px;
+        height: 100vh;
+        max-height: 700px;
+        border: 2px solid #333;
+        overflow: hidden;
+        background: #000;
+    }
 
-        .ufo {
-            position: absolute;
-            font-size: 2em;
-            transform: translateX(-50%);
-            user-select: none;
-        }
+    .player {
+        position: absolute;
+        bottom: 20px;
+        font-size: 2.2rem;
+        transform: translateX(-50%);
+        user-select: none;
+    }
 
-        .score {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            color: #fff;
-            font-size: 1.5em;
-        }
+    .laser {
+        position: absolute;
+        font-size: 1.5rem;
+        transform: translateX(-50%);
+        user-select: none;
+    }
 
-        .game-over {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #fff;
-            font-size: 2em;
-            text-align: center;
-            display: none;
-        }
+    .ufo {
+        position: absolute;
+        font-size: 2rem;
+        transform: translateX(-50%);
+        user-select: none;
+    }
 
-        button {
-            background: #ff69b4;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 50px;
-            color: white;
-            font-size: 1.2em;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-    </style>
+    .score {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 1.2rem;
+    }
+
+    .game-over {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.8);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        text-align: center;
+        font-size: 1.8rem;
+    }
+
+    button {
+        margin-top: 20px;
+        padding: 12px 25px;
+        font-size: 1.2rem;
+        border-radius: 30px;
+        border: none;
+        background: hotpink;
+        color: white;
+        cursor: pointer;
+    }
+</style>
 </head>
+
 <body>
-    <div id="gameContainer">
+<div id="gameContainer">
+    <div class="score">Score: <span id="scoreValue">0</span></div>
+
+    <div class="game-over" id="gameOver">
+        Game Over<br>
+        Score: <span id="finalScore">0</span><br>
+        <button onclick="restartGame()">Play Again</button>
+    </div>
+</div>
+
+<script>
+const game = document.getElementById("gameContainer");
+let scoreEl = document.getElementById("scoreValue");
+let gameOverEl = document.getElementById("gameOver");
+let finalScoreEl = document.getElementById("finalScore");
+
+let player, lasers = [], ufos = [];
+let score = 0;
+let active = true;
+let ufoSpeed = 2;
+let keys = {};
+
+let touchStartX = null;
+
+// --- PLAYER ---
+function createPlayer() {
+    player = document.createElement("div");
+    player.className = "player";
+    player.textContent = "🚀";
+    player.style.left = "50%";
+    game.appendChild(player);
+}
+
+// --- SHOOT ---
+function shoot() {
+    if (!active) return;
+
+    const laser = document.createElement("div");
+    laser.className = "laser";
+    laser.textContent = "⚡";
+    laser.style.left = player.style.left;
+    laser.style.bottom = "70px";
+    game.appendChild(laser);
+    lasers.push(laser);
+}
+
+// --- UFO ---
+function createUFO() {
+    if (!active) return;
+
+    const ufo = document.createElement("div");
+    ufo.className = "ufo";
+    ufo.textContent = "🛸";
+    ufo.style.left = Math.random() * 100 + "%";
+    ufo.style.top = "-50px";
+    ufo.dataset.speed = ufoSpeed;
+    game.appendChild(ufo);
+    ufos.push(ufo);
+}
+
+// --- GAME LOOP ---
+function update() {
+    if (!active) return;
+
+    let x = parseFloat(player.style.left);
+
+    if (keys["ArrowLeft"]) x -= 1.5;
+    if (keys["ArrowRight"]) x += 1.5;
+
+    x = Math.max(0, Math.min(100, x));
+    player.style.left = x + "%";
+
+    lasers.forEach((l, i) => {
+        l.style.top = (l.offsetTop - 6) + "px";
+        if (l.offsetTop < -20) {
+            l.remove();
+            lasers.splice(i, 1);
+        }
+    });
+
+    ufos.forEach((u, ui) => {
+        u.style.top = (u.offsetTop + parseFloat(u.dataset.speed)) + "px";
+
+        if (u.offsetTop > game.offsetHeight) {
+            endGame();
+        }
+
+        lasers.forEach((l, li) => {
+            if (hit(l, u)) {
+                l.remove();
+                u.remove();
+                lasers.splice(li, 1);
+                ufos.splice(ui, 1);
+                score += 10;
+                scoreEl.textContent = score;
+                ufoSpeed += 0.2;
+            }
+        });
+    });
+}
+
+// --- COLLISION ---
+function hit(a, b) {
+    const r1 = a.getBoundingClientRect();
+    const r2 = b.getBoundingClientRect();
+    return !(r1.right < r2.left ||
+             r1.left > r2.right ||
+             r1.bottom < r2.top ||
+             r1.top > r2.bottom);
+}
+
+// --- END ---
+function endGame() {
+    active = false;
+    finalScoreEl.textContent = score;
+    gameOverEl.style.display = "flex";
+}
+
+// --- RESTART ---
+function restartGame() {
+    game.innerHTML = `
         <div class="score">Score: <span id="scoreValue">0</span></div>
         <div class="game-over" id="gameOver">
-            Game Over!<br>
-            Final Score: <span id="finalScore">0</span>
-            <br>
+            Game Over<br>
+            Score: <span id="finalScore">0</span><br>
             <button onclick="restartGame()">Play Again</button>
         </div>
-    </div>
+    `;
+    scoreEl = document.getElementById("scoreValue");
+    gameOverEl = document.getElementById("gameOver");
+    finalScoreEl = document.getElementById("finalScore");
 
-    <script>
-        const gameContainer = document.getElementById('gameContainer');
-        const scoreElement = document.getElementById('scoreValue');
-        const gameOverElement = document.getElementById('gameOver');
-        const finalScoreElement = document.getElementById('finalScore');
-        
-        let player;
-        let score = 0;
-        let gameActive = true;
-        let lasers = [];
-        let ufos = [];
-        let keys = {};
-        let ufoSpeed = 2; // Initial UFO speed
+    lasers = [];
+    ufos = [];
+    score = 0;
+    ufoSpeed = 2;
+    active = true;
 
-        function createPlayer() {
-            player = document.createElement('div');
-            player.className = 'player';
-            player.textContent = '🚀';
-            player.style.bottom = '20px';
-            player.style.left = '50%';
-            gameContainer.appendChild(player);
-        }
+    createPlayer();
+}
 
-        function createUFO() {
-            if (!gameActive) return;
-            const ufo = document.createElement('div');
-            ufo.className = 'ufo';
-            ufo.textContent = '🛸';
-            ufo.style.left = Math.random() * 100 + '%';
-            ufo.style.top = '-50px';
-            ufo.dataset.speed = ufoSpeed; // Store current speed with UFO
-            gameContainer.appendChild(ufo);
-            ufos.push(ufo);
-        }
+// --- KEYBOARD ---
+document.addEventListener("keydown", e => {
+    keys[e.key] = true;
+    if (e.key === " ") {
+        shoot();
+        e.preventDefault();
+    }
+});
+document.addEventListener("keyup", e => keys[e.key] = false);
 
-        function shoot() {
-            if (!gameActive) return;
-            const laser = document.createElement('div');
-            laser.className = 'laser';
-            laser.textContent = '⚡';
-            laser.style.left = player.style.left;
-            laser.style.bottom = '60px';
-            gameContainer.appendChild(laser);
-            lasers.push(laser);
-        }
+// --- TOUCH CONTROLS ---
+game.addEventListener("touchstart", e => {
+    touchStartX = e.touches[0].clientX;
+    shoot();
+});
 
-        function updateGame() {
-            if (!gameActive) return;
+game.addEventListener("touchmove", e => {
+    if (touchStartX === null) return;
+    const dx = e.touches[0].clientX - touchStartX;
+    let x = parseFloat(player.style.left);
+    x += dx * 0.05;
+    x = Math.max(0, Math.min(100, x));
+    player.style.left = x + "%";
+    touchStartX = e.touches[0].clientX;
+});
 
-            // Move player
-            const currentLeft = parseFloat(player.style.left);
-            if (keys.ArrowLeft && currentLeft > 0) {
-                player.style.left = (currentLeft - 2) + '%';
-            }
-            if (keys.ArrowRight && currentLeft < 100) {
-                player.style.left = (currentLeft + 2) + '%';
-            }
+game.addEventListener("touchend", () => touchStartX = null);
 
-            // Move lasers
-            lasers.forEach((laser, laserIndex) => {
-                const top = laser.offsetTop;
-                if (top < 0) {
-                    laser.remove();
-                    lasers.splice(laserIndex, 1);
-                } else {
-                    laser.style.top = (top - 5) + 'px';
-                }
-            });
-
-            // Move UFOs
-            ufos.forEach((ufo, ufoIndex) => {
-                const top = ufo.offsetTop;
-                if (top > gameContainer.offsetHeight) {
-                    endGame();
-                } else {
-                    const speed = parseFloat(ufo.dataset.speed);
-                    ufo.style.top = (top + speed) + 'px';
-                }
-
-                // Check collision with lasers
-                lasers.forEach((laser, laserIndex) => {
-                    if (checkCollision(laser, ufo)) {
-                        ufo.remove();
-                        laser.remove();
-                        ufos.splice(ufoIndex, 1);
-                        lasers.splice(laserIndex, 1);
-                        score += 10;
-                        scoreElement.textContent = score;
-                        // Increase speed for future UFOs
-                        ufoSpeed += 0.2;
-                    }
-                });
-            });
-        }
-
-        function checkCollision(element1, element2) {
-            const rect1 = element1.getBoundingClientRect();
-            const rect2 = element2.getBoundingClientRect();
-            return !(rect1.right < rect2.left || 
-                    rect1.left > rect2.right || 
-                    rect1.bottom < rect2.top || 
-                    rect1.top > rect2.bottom);
-        }
-
-        function endGame() {
-            gameActive = false;
-            finalScoreElement.textContent = score;
-            gameOverElement.style.display = 'block';
-        }
-
-        function restartGame() {
-            // Clear game state
-            gameContainer.innerHTML = `
-                <div class="score">Score: <span id="scoreValue">0</span></div>
-                <div class="game-over" id="gameOver">
-                    Game Over!<br>
-                    Final Score: <span id="finalScore">0</span>
-                    <br>
-                    <button onclick="restartGame()">Play Again</button>
-                </div>
-            `;
-            scoreElement = document.getElementById('scoreValue');
-            gameOverElement = document.getElementById('gameOver');
-            finalScoreElement = document.getElementById('finalScore');
-            
-            // Reset variables
-            score = 0;
-            gameActive = true;
-            lasers = [];
-            ufos = [];
-            ufoSpeed = 2; // Reset UFO speed
-            gameOverElement.style.display = 'none';
-            
-            // Create new player
-            createPlayer();
-        }
-
-        // Event listeners
-        document.addEventListener('keydown', (e) => {
-            keys[e.key] = true;
-            if (e.key === ' ') {
-                shoot();
-                e.preventDefault();
-            }
-        });
-
-        document.addEventListener('keyup', (e) => {
-            keys[e.key] = false;
-        });
-
-        // Start game
-        createPlayer();
-        setInterval(createUFO, 2000);
-        setInterval(updateGame, 16);
-    </script>
+// --- START ---
+createPlayer();
+setInterval(createUFO, 1800);
+setInterval(update, 16);
+</script>
 </body>
-</html> 
+</html>
