@@ -162,7 +162,7 @@
                     </ul>
                 </div>
                 <div class="mt-6 pt-4 border-t border-cyber-700 text-center text-xs text-slate-500">
-                    IPTables v0.5 • Secure Linux Lab
+                    IPTables v0.6 • Secure Linux Lab
                 </div>
             </div>
         </aside>
@@ -170,6 +170,28 @@
         <!-- Main Workspace -->
         <main class="flex-1 flex flex-col gap-6">
             
+            <!-- MOBILE ONLY: "Test your might" card at the very top on mobile -->
+            <div class="md:hidden bg-cyber-800/80 border border-cyber-accent/50 rounded-2xl p-4 shadow-xl flex items-center gap-4 glow-accent">
+                <div class="w-10 h-10 rounded-xl bg-cyber-accent/10 border border-cyber-accent/40 flex items-center justify-center text-cyber-accent text-xl shrink-0">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-sm font-bold text-white tracking-wide">IPTables Challenge Arena</h3>
+                    <p class="text-xs text-slate-300 mt-0.5">Test your might with these exercises.</p>
+                </div>
+            </div>
+
+            <!-- DESKTOP ONLY: Original position (hidden on mobile, visible on medium screens and up) -->
+            <div class="hidden md:flex bg-cyber-800/80 border border-cyber-accent/50 rounded-2xl p-4 shadow-xl items-center gap-4 glow-accent">
+                <div class="w-10 h-10 rounded-xl bg-cyber-accent/10 border border-cyber-accent/40 flex items-center justify-center text-cyber-accent text-xl shrink-0">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-sm font-bold text-white tracking-wide">IPTables Challenge Arena</h3>
+                    <p class="text-xs text-slate-300 mt-0.5">Test your might with these iptables exercises.</p>
+                </div>
+            </div>
+
             <section class="bg-cyber-800/60 backdrop-blur border border-cyber-600/50 rounded-2xl p-5 shadow-xl">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2">
