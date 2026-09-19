@@ -54,6 +54,7 @@
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
+            height: 8px;
         }
         ::-webkit-scrollbar-track {
             background: #0a0f1d;
@@ -105,10 +106,6 @@
                     </div>
                 </div>
 
-                <button onclick="resetCurrentExercise()" class="hidden sm:flex bg-cyber-700 hover:bg-cyber-600 border border-slate-600 text-slate-200 px-3 py-1.5 rounded-xl text-xs font-medium transition items-center gap-1.5">
-                    <i class="fa-solid fa-rotate-right"></i> Reset
-                </button>
-
                 <!-- Mobile Hamburger Toggle Button -->
                 <button onclick="toggleMobileMenu()" class="md:hidden bg-cyber-700/80 border border-cyber-600 text-cyber-accent p-2 rounded-xl text-lg focus:outline-none transition">
                     <i id="menu-icon" class="fa-solid fa-bars"></i>
@@ -128,9 +125,6 @@
                     <span>Score: <strong id="score-display-mob" class="text-cyber-accent">0 / 0</strong></span>
                     <span>Completed: <strong id="completed-display-mob" class="text-green-400">0%</strong></span>
                 </div>
-                <button onclick="resetCurrentExercise(); toggleMobileMenu();" class="w-full bg-cyber-700 text-slate-200 py-2 rounded-lg text-center font-medium">
-                    <i class="fa-solid fa-rotate-right mr-1"></i> Reset Exercise
-                </button>
             </div>
         </div>
     </header>
@@ -192,7 +186,7 @@
                             <i class="fa-solid fa-laptop"></i>
                         </div>
                         <h4 class="font-bold text-white text-sm">PC-1 (Client)</h4>
-                        <span class="font-mono text-xs text-cyan-400 mt-1 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/50">192.168.100.20</span>
+                        <span class="font-mono text-xs text-cyan-400 mt-1 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/50">NET-1: 192.168.100.20</span>
                         <p class="text-xs text-slate-400 mt-2">External client zone requesting services.</p>
                     </div>
 
@@ -204,8 +198,8 @@
                         </div>
                         <h4 class="font-bold text-white text-sm">FIREWALL (Gateway)</h4>
                         <div class="flex flex-col gap-1 mt-1 w-full">
-                            <span class="font-mono text-[11px] text-purple-300 bg-purple-950/60 px-2 py-0.5 rounded border border-purple-800/50">INT: 192.168.100.30</span>
-                            <span class="font-mono text-[11px] text-purple-300 bg-purple-950/60 px-2 py-0.5 rounded border border-purple-800/50">EXT: 172.16.200.30</span>
+                            <span class="font-mono text-[11px] text-purple-300 bg-purple-950/60 px-2 py-0.5 rounded border border-purple-800/50">NET-1: 192.168.100.30</span>
+                            <span class="font-mono text-[11px] text-purple-300 bg-purple-950/60 px-2 py-0.5 rounded border border-purple-800/50">NET-2: 172.16.200.30</span>
                         </div>
                         <p class="text-xs text-slate-400 mt-2">Packet filtering & NAT router node.</p>
                     </div>
@@ -217,7 +211,7 @@
                             <i class="fa-solid fa-server"></i>
                         </div>
                         <h4 class="font-bold text-white text-sm">SERVER-2 (Internal Server)</h4>
-                        <span class="font-mono text-xs text-emerald-400 mt-1 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/50">172.16.200.40</span>
+                        <span class="font-mono text-xs text-emerald-400 mt-1 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/50">NET-2: 172.16.200.40</span>
                         <p class="text-xs text-slate-400 mt-2">Protected backend application server.</p>
                     </div>
                 </div>
@@ -229,9 +223,13 @@
                         <span id="active-exercise-badge" class="text-xs font-mono uppercase tracking-wider text-cyber-accent bg-cyber-accent/10 px-2.5 py-1 rounded-full border border-cyber-accent/30">Exercise 1</span>
                         <h2 id="active-exercise-title" class="text-xl font-bold text-white mt-1">Exercise 1: Standard Filtering & NAT Rules</h2>
                     </div>
+                    <!-- Side-by-side Demo Answers and Reset Buttons -->
                     <div class="flex items-center gap-2">
                         <button onclick="fillAllAnswers()" class="text-xs bg-cyber-700 hover:bg-cyber-600 text-slate-300 border border-cyber-600 px-3 py-1.5 rounded-lg transition flex items-center gap-1.5">
                             <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i> Demo Answers
+                        </button>
+                        <button onclick="resetCurrentExercise()" class="text-xs bg-cyber-700 hover:bg-cyber-600 border border-slate-600 text-slate-200 px-3 py-1.5 rounded-lg font-medium transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-rotate-right"></i> Reset
                         </button>
                     </div>
                 </div>
@@ -532,7 +530,7 @@
 
                     subInputsHTML += `
                         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 mt-2">
-                            <div class="relative flex-1">
+                            <div class="relative flex-1 overflow-x-auto whitespace-nowrap pb-1 sm:pb-0">
                                 <input type="text" 
                                     id="input-${ruleIdx}-${subIdx}"
                                     value="${isSolved ? ans : ''}"
@@ -542,10 +540,10 @@
                                     autocapitalize="none"
                                     autocomplete="off"
                                     placeholder="Enter iptables command..."
-                                    class="w-full font-mono text-xs sm:text-sm bg-cyber-800 border ${isSolved ? 'border-green-500/60 text-green-300 bg-green-950/10' : 'border-cyber-600 text-slate-200 focus:border-cyber-accent'} rounded-lg px-3 py-2.5 outline-none transition"
+                                    class="w-full min-w-[320px] font-mono text-xs sm:text-sm bg-cyber-800 border ${isSolved ? 'border-green-500/60 text-green-300 bg-green-950/10' : 'border-cyber-600 text-slate-200 focus:border-cyber-accent'} rounded-lg px-3 py-2.5 outline-none transition"
                                     onkeydown="if(event.key === 'Enter') validateRule(${ruleIdx}, ${subIdx})"
                                 />
-                                ${isSolved ? '<div class="absolute right-3 top-1/2 -translate-y-1/2 text-green-400"><i class="fa-solid fa-check"></i></div>' : ''}
+                                ${isSolved ? '<div class="absolute right-3 top-1/2 -translate-y-1/2 text-green-400 pointer-events-none"><i class="fa-solid fa-check"></i></div>' : ''}
                             </div>
                             <div class="flex items-center gap-2">
                                 ${!isSolved ? `
@@ -616,7 +614,6 @@
             const ex = exercisesData.find(e => e.id === currentExerciseId);
             const correct = ex.rules[ruleIdx].answers[subIdx];
             
-            // Define the standard prefixes to check against
             const prefixes = [
                 "iptables -t nat -A PREROUTING",
                 "iptables -t nat -A POSTROUTING",
@@ -627,7 +624,6 @@
                 "iptables -P FORWARD"
             ];
 
-            // Find which base prefix applies to this rule
             let matchedPrefix = "";
             for (let prefix of prefixes) {
                 if (correct.startsWith(prefix)) {
@@ -636,11 +632,9 @@
                 }
             }
 
-            // If a standard prefix applies, show it along with extra useful context
             if (matchedPrefix) {
                 showToast(`Hint: Starts with "${matchedPrefix}"`, 'info');
             } else {
-                // Fallback generic hint if no standard prefix matches
                 const hintSnippet = correct.substring(0, Math.min(22, correct.length)) + '...';
                 showToast(`Hint: "${hintSnippet}"`, 'info');
             }
