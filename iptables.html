@@ -162,7 +162,7 @@
                     </ul>
                 </div>
                 <div class="mt-6 pt-4 border-t border-cyber-700 text-center text-xs text-slate-500">
-                    IPTables v0.3 • Secure Linux Lab
+                    IPTables v0.4 • Secure Linux Lab
                 </div>
             </div>
         </aside>
@@ -525,7 +525,7 @@
                 card.className = 'bg-cyber-900/60 border border-cyber-700 rounded-xl p-5 flex flex-col gap-3 transition';
 
                 let subInputsHTML = '';
-                rule.rules ? null : rule.answers.forEach((ans, subIdx) => {
+                rule.answers.forEach((ans, subIdx) => {
                     const isSolved = userProgress[ex.id] && userProgress[ex.id][ruleIdx] && userProgress[ex.id][ruleIdx][subIdx] === true;
 
                     subInputsHTML += `
@@ -577,22 +577,19 @@
             });
         }
 
-        function cleanCommand(str) {
-            return str.trim().replace(/\s+/g, ' ');
+        function cleanCommand(cmd) {
+            return cmd.trim().replace(/\s+/g, ' ');
         }
 
         function validateRule(ruleIdx, subIdx) {
             const inputEl = document.getElementById(`input-${ruleIdx}-${subIdx}`);
+            if (!inputEl) return;
+
             const userVal = cleanCommand(inputEl.value);
             const ex = exercisesData.find(e => e.id === currentExerciseId);
-            const correctVal = cleanCommand(ex.rules[ruleIdx].answers[subIdx]);
+            const expectedAns = cleanCommand(ex.rules[ruleIdx].answers[subIdx]);
 
-            if (userVal === '') {
-                showToast('Please enter an iptables command first.', 'warning');
-                return;
-            }
-
-            if (userVal.toLowerCase() === correctVal.toLowerCase()) {
+            if (userVal === expectedAns) {
                 if (!userProgress[currentExerciseId]) {
                     userProgress[currentExerciseId] = {};
                 }
@@ -601,61 +598,37 @@
                 }
                 userProgress[currentExerciseId][ruleIdx][subIdx] = true;
 
-                showToast('Correct! Rule locked in place.', 'success');
+                showToast("Correct firewall rule syntax!", "success");
                 loadExercise(currentExerciseId);
             } else {
-                showToast('Incorrect syntax. Check parameters, flags (-p, -s, -d, -j), and IP addresses.', 'error');
+                showToast("Incorrect syntax. Double-check flags and spacing.", "error");
                 inputEl.classList.add('border-red-500', 'glow-danger');
                 setTimeout(() => {
                     inputEl.classList.remove('border-red-500', 'glow-danger');
-                }, 1500);
+                }, 1000);
             }
         }
 
         function showHint(ruleIdx, subIdx) {
             const ex = exercisesData.find(e => e.id === currentExerciseId);
-            const correct = ex.rules[ruleIdx].answers[subIdx];
-            
-            const prefixes = [
-                "iptables -t nat -A PREROUTING",
-                "iptables -t nat -A POSTROUTING",
-                "iptables -A INPUT",
-                "iptables -A FORWARD",
-                "iptables -A OUTPUT",
-                "iptables -P INPUT",
-                "iptables -P FORWARD"
-            ];
-
-            let matchedPrefix = "";
-            for (let prefix of prefixes) {
-                if (correct.startsWith(prefix)) {
-                    matchedPrefix = prefix;
-                    break;
-                }
-            }
-
-            if (matchedPrefix) {
-                showToast(`Hint: Starts with "${matchedPrefix}"`, 'info');
-            } else {
-                const hintSnippet = correct.substring(0, Math.min(22, correct.length)) + '...';
-                showToast(`Hint: "${hintSnippet}"`, 'info');
-            }
+            const ans = ex.rules[ruleIdx].answers[subIdx];
+            showToast(`Hint: ${ans}`, "info");
         }
 
         function fillAllAnswers() {
+            const ex = exercisesData.find(e => e.id === currentExerciseId);
             if (!userProgress[currentExerciseId]) {
                 userProgress[currentExerciseId] = {};
             }
-            const ex = exercisesData.find(e => e.id === currentExerciseId);
-            ex.rules.forEach((rule, rIdx) => {
-                if (!userProgress[currentExerciseId][rIdx]) {
-                    userProgress[currentExerciseId][rIdx] = {};
+            ex.rules.forEach((rule, ruleIdx) => {
+                if (!userProgress[currentExerciseId][ruleIdx]) {
+                    userProgress[currentExerciseId][ruleIdx] = {};
                 }
-                rule.answers.forEach((ans, sIdx) => {
-                    userProgress[currentExerciseId][rIdx][sIdx] = true;
+                rule.answers.forEach((ans, subIdx) => {
+                    userProgress[currentExerciseId][ruleIdx][subIdx] = true;
                 });
             });
-            showToast('Demo mode: All answers filled and locked!', 'success');
+            showToast("Demo answers loaded for current exercise!", "success");
             loadExercise(currentExerciseId);
         }
 
@@ -663,29 +636,29 @@
             if (userProgress[currentExerciseId]) {
                 delete userProgress[currentExerciseId];
             }
-            showToast('Exercise progress reset.', 'info');
+            showToast("Exercise reset successfully.", "info");
             loadExercise(currentExerciseId);
         }
 
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
-            const iconEl = document.getElementById('toast-icon');
-            const msgEl = document.getElementById('toast-message');
+            const icon = document.getElementById('toast-icon');
+            const msg = document.getElementById('toast-message');
 
-            if (toastTimeout) clearTimeout(toastTimeout);
+            msg.textContent = message;
 
-            msgEl.textContent = message;
             if (type === 'success') {
-                iconEl.innerHTML = '<i class="fa-solid fa-circle-check text-green-400"></i>';
+                icon.className = 'fa-solid fa-circle-check text-green-400 text-lg';
                 toast.className = 'fixed bottom-6 right-6 transform translate-y-0 opacity-100 transition-all duration-300 z-50 bg-cyber-800 border border-green-500 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 glow-success';
             } else if (type === 'error') {
-                iconEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red-400"></i>';
+                icon.className = 'fa-solid fa-triangle-exclamation text-red-400 text-lg';
                 toast.className = 'fixed bottom-6 right-6 transform translate-y-0 opacity-100 transition-all duration-300 z-50 bg-cyber-800 border border-red-500 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 glow-danger';
             } else {
-                iconEl.innerHTML = '<i class="fa-solid fa-circle-info text-cyan-400"></i>';
-                toast.className = 'fixed bottom-6 right-6 transform translate-y-0 opacity-100 transition-all duration-300 z-50 bg-cyber-800 border border-cyan-500 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 glow-accent';
+                icon.className = 'fa-solid fa-circle-info text-cyber-accent text-lg';
+                toast.className = 'fixed bottom-6 right-6 transform translate-y-0 opacity-100 transition-all duration-300 z-50 bg-cyber-800 border border-cyber-accent text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 glow-accent';
             }
 
+            if (toastTimeout) clearTimeout(toastTimeout);
             toastTimeout = setTimeout(() => {
                 toast.className = 'fixed bottom-6 right-6 transform translate-y-24 opacity-0 transition-all duration-300 z-50 bg-cyber-800 border border-cyber-accent text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3';
             }, 3500);
