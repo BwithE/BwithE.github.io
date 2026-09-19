@@ -1,216 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>BwithE</title>
-
-<style>
-body {
-  margin: 0;
-  background: black;
-  overflow-x: hidden;
-  font-family: "Courier New", monospace;
-  color: #fff;
-  touch-action: manipulation;
-}
-
-#matrix {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-}
-
-.header {
-  position: relative;
-  z-index: 10;
-  text-align: center;
-  padding: 40px 20px 20px;
-}
-
-.profile-picture {
-  width: 130px;
-  height: 130px;
-  border-radius: 50%;
-  border: 3px solid #fd00db;
-  margin-top: 20px;
-}
-
-.section {
-  position: relative;
-  z-index: 10;
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.section h2 {
-  margin-bottom: 15px;
-}
-
-/* Cards */
-.card {
-  border: 2px solid #fd00db;
-  margin-bottom: 16px;
-  padding: 18px;
-  background: rgba(0, 0, 0, 0.75);
-  border-radius: 10px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card:active {
-  transform: scale(0.98);
-}
-
-.card a {
-  color: #fff;
-  text-decoration: none;
-}
-
-.card h3 {
-  margin: 0 0 8px;
-}
-
-.card p {
-  margin: 0;
-  opacity: 0.9;
-}
-
-/* Mobile polish */
-@media (max-width: 600px) {
-  .header h1 {
-    font-size: 1.8rem;
-  }
-
-  .card {
-    padding: 20px;
-  }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>bwithe // Portfolio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace']
+                    },
+                    colors: {
+                        cyber: {
+                            900: '#030712',
+                            800: '#0b0f19',
+                            700: '#111827',
+                            600: '#1f293d',
+                            accent: '#06b6d4',
+                            purple: '#a855f7',
+                            muted: '#94a3b8'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #030712;
+            color: #cbd5e1;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+        }
+        /* Professional technical background pattern (dot-grid) */
+        .tech-bg {
+            background-image: radial-gradient(rgba(6, 182, 212, 0.15) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        .glow-accent {
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #030712;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f293d;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+    </style>
 </head>
 
-<body>
-<canvas id="matrix"></canvas>
+<body class="min-h-screen flex flex-col tech-bg selection:bg-cyan-500 selection:text-black">
 
-<header class="header">
-  <h1>Welcome!</h1>
-  <p>Cybersecurity Engineer • CTF enthusiast • builder of weird things</p>
+<!-- Top Navigation Bar / Status Indicator -->
+<nav class="relative z-20 border-b border-slate-800/80 bg-cyber-900/80 backdrop-blur-md px-6 py-3 flex items-center justify-between">
+    <div class="flex items-center space-x-2 code-font text-xs text-cyber-accent">
+        <span class="w-2 h-2 rounded-full bg-cyber-accent animate-pulse"></span>
+        <span>SYS.USER: bwithe</span>
+    </div>
+    <div class="flex items-center space-x-4 text-xs code-font text-slate-400">
+        <span class="hidden sm:inline">ACCESS: <strong class="text-slate-200">GRANTED</strong></span>
+    </div>
+</nav>
+
+<!-- Header & Profile Section -->
+<header class="header relative z-10 text-center py-12 px-5 max-w-3xl mx-auto">
+    <!-- Profile picture container -->
+    <div id="avatar-container" class="relative inline-block mb-4">
+        <!-- Default fallback skeleton if fetch takes a moment -->
+        <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-cyber-800 border-2 border-cyber-accent/20 animate-pulse mx-auto"></div>
+    </div>
+    
+    <div class="code-font text-xs text-cyber-accent mb-2 tracking-widest uppercase">&lt;security_engineer /&gt;</div>
+    <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-white mb-3">bwithe</h1>
+    <p class="text-sm sm:text-base text-slate-400 max-w-lg mx-auto font-light">
+        Cybersecurity Engineer • CTF enthusiast • builder of reliable, weird things.
+    </p>
 </header>
 
-<section class="section" id="repositories">
-  <h2>GitHub Repositories</h2>
-</section>
+<!-- Main Sections Container -->
+<main class="relative z-10 max-w-5xl w-full mx-auto px-4 pb-20 flex flex-col gap-10">
+
+    <!-- GitHub Repositories Section -->
+    <section class="section" id="repositories">
+        <div class="flex items-center justify-between mb-5 border-b border-slate-800 pb-3">
+            <h2 class="text-sm font-semibold code-font text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                <i class="fa-solid fa-terminal text-cyber-accent"></i> Pinned Repositories
+            </h2>
+            <span class="text-xs code-font text-slate-500">github.com/bwithe</span>
+        </div>
+        <!-- Repository cards injected dynamically via JS -->
+    </section>
+
+    <!-- HTML Games Section -->
+    <section class="section">
+        <div class="flex items-center justify-between mb-5 border-b border-slate-800 pb-3">
+            <h2 class="text-sm font-semibold code-font text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                <i class="fa-solid fa-gamepad text-cyber-purple"></i> Interactive Labs & Games
+            </h2>
+            <span class="text-xs code-font text-slate-500">local_deployments</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            
+            <div class="bg-cyber-800/60 backdrop-blur border border-slate-800 hover:border-cyber-accent/50 rounded-xl p-5 transition-all duration-200 group">
+                <a href="./iptables.html" class="block">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="code-font text-xs text-cyber-accent bg-cyber-accent/10 px-2 py-0.5 rounded border border-cyber-accent/25">NETWORK</span>
+                        <i class="fa-solid fa-arrow-right text-xs text-slate-500 group-hover:text-cyber-accent transition-colors"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-white mb-1">IPTABLES Exercises</h3>
+                    <p class="text-xs text-slate-400">Test your firewall rule crafting might.</p>
+                </a>
+            </div>
+            
+            <div class="bg-cyber-800/60 backdrop-blur border border-slate-800 hover:border-cyber-purple/50 rounded-xl p-5 transition-all duration-200 group">
+                <a href="./box.html" class="block">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="code-font text-xs text-cyber-purple bg-cyber-purple/10 px-2 py-0.5 rounded border border-cyber-purple/25">ARCADE</span>
+                        <i class="fa-solid fa-arrow-right text-xs text-slate-500 group-hover:text-cyber-purple transition-colors"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-white mb-1">Boxing Battle</h3>
+                    <p class="text-xs text-slate-400">Turn-based tactical boxing simulator.</p>
+                </a>
+            </div>
+                
+            <div class="bg-cyber-800/60 backdrop-blur border border-slate-800 hover:border-cyber-accent/50 rounded-xl p-5 transition-all duration-200 group">
+                <a href="./car.html" class="block">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="code-font text-xs text-cyber-accent bg-cyber-accent/10 px-2 py-0.5 rounded border border-cyber-accent/25">ARCADE</span>
+                        <i class="fa-solid fa-arrow-right text-xs text-slate-500 group-hover:text-cyber-accent transition-colors"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-white mb-1">Car Dodger</h3>
+                    <p class="text-xs text-slate-400">Swipe left/right and dodge incoming traffic.</p>
+                </a>
+            </div>
+
+            <div class="bg-cyber-800/60 backdrop-blur border border-slate-800 hover:border-cyber-purple/50 rounded-xl p-5 transition-all duration-200 group">
+                <a href="./space.html" class="block">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="code-font text-xs text-cyber-purple bg-cyber-purple/10 px-2 py-0.5 rounded border border-cyber-purple/25">ARCADE</span>
+                        <i class="fa-solid fa-arrow-right text-xs text-slate-500 group-hover:text-cyber-purple transition-colors"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-white mb-1">UFO Destructo</h3>
+                    <p class="text-xs text-slate-400">Tactical defense against inbound UFO threats.</p>
+                </a>
+            </div>
+
+        </div>
+    </section>
+</main>
+
+<!-- Footer -->
+<footer class="mt-auto border-t border-slate-900 bg-cyber-900/50 py-6 text-center text-xs code-font text-slate-500">
+    <p>bwithe // MAD-SCIENTIST</p>
+</footer>
 
 <script>
-/* -------- MATRIX EFFECT -------- */
-const canvas = document.getElementById("matrix");
-const ctx = canvas.getContext("2d");
-
-function resize() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener("resize", resize);
-
-const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*";
-const fontSize = 14;
-let columns = Math.floor(canvas.width / fontSize);
-let drops = Array(columns).fill(1);
-
-function draw() {
-  ctx.fillStyle = "rgba(0,0,0,0.07)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  ctx.fillStyle = "#9932CC";
-  ctx.font = `${fontSize}px monospace`;
-
-  for (let i = 0; i < drops.length; i++) {
-    const char = chars[Math.floor(Math.random() * chars.length)];
-    ctx.fillText(char, i * fontSize, drops[i] * fontSize);
-    if (drops[i] * fontSize > canvas.height && Math.random() > 0.98) {
-      drops[i] = 0;
-    }
-    drops[i]++;
-  }
-}
-
-// Slightly slower on mobile
-setInterval(draw, window.innerWidth < 600 ? 50 : 33);
-
 /* -------- GITHUB REPOS -------- */
 const pinnedRepositories = [
-  "postshell",
-  "jack-attack",
-  "ctf",
-  "lstnr",
-  "uppy",
-  "rpi-ap"
+    "postshell",
+    "jack-attack",
+    "ctf",
+    "lstnr",
+    "uppy",
+    "rpi-ap"
 ];
 
 Promise.all(
-  pinnedRepositories.map(repo =>
-    fetch(`https://api.github.com/repos/BwithE/${repo}`).then(r => r.json())
-  )
+    pinnedRepositories.map(repo =>
+        fetch(`https://api.github.com/repos/bwithe/${repo}`).then(r => r.json())
+    )
 ).then(repos => {
-  const container = document.getElementById("repositories");
-  repos.forEach(repo => {
-    const div = document.createElement("div");
-    div.className = "card";
-    div.innerHTML = `
-      <a href="${repo.html_url}" target="_blank">
-        <h3>${repo.name}</h3>
-        <p>${repo.description || "No description provided."}</p>
-      </a>
-    `;
-    container.appendChild(div);
-  });
+    const container = document.getElementById("repositories");
+    const grid = document.createElement("div");
+    grid.className = "grid grid-cols-1 sm:grid-cols-2 gap-4";
+    
+    repos.forEach(repo => {
+        const div = document.createElement("div");
+        div.className = "bg-cyber-800/60 backdrop-blur border border-slate-800 hover:border-cyber-accent/50 rounded-xl p-5 transition-all duration-200 group";
+        div.innerHTML = `
+            <a href="${repo.html_url}" target="_blank" class="block">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="code-font text-xs text-cyber-accent">${repo.language || 'REPO'}</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-500 group-hover:text-cyber-accent transition-colors"></i>
+                </div>
+                <h3 class="text-base font-bold text-white mb-1">${repo.name}</h3>
+                <p class="text-xs text-slate-400 line-clamp-2">${repo.description || "No description provided."}</p>
+            </a>
+        `;
+        grid.appendChild(div);
+    });
+    container.appendChild(grid);
 });
 
 /* -------- PROFILE IMAGE -------- */
-fetch("https://api.github.com/users/BwithE")
-  .then(r => r.json())
-  .then(data => {
-    const img = document.createElement("img");
-    img.src = data.avatar_url;
-    img.className = "profile-picture";
-    document.querySelector(".header").appendChild(img);
-  });
+fetch("https://api.github.com/users/bwithe")
+    .then(r => r.json())
+    .then(data => {
+        const avatarContainer = document.getElementById("avatar-container");
+        avatarContainer.innerHTML = ''; // clear loading state
+        const img = document.createElement("img");
+        img.src = data.avatar_url;
+        img.className = "w-24 h-24 sm:w-28 sm:h-28 rounded-2xl border-2 border-cyber-accent/40 shadow-xl object-cover glow-accent";
+        avatarContainer.appendChild(img);
+    })
+    .catch(() => {
+        // Fallback if network blocks or errors
+        document.getElementById("avatar-container").innerHTML = '<div class="w-24 h-24 rounded-2xl bg-cyber-800 border border-red-500/30 flex items-center justify-center text-xs text-red-400">Failed to load</div>';
+    });
 </script>
-
-<section class="section">
-  <h2>HTML Games</h2>
-
-  <div class="card">
-    <a href="./iptables.html">
-      <h3>IPTABLES Exercises</h3>
-      <p>Test your might.</p>
-    </a>
-  </div>
-  
-  <div class="card">
-    <a href="./box.html">
-      <h3>Boxing Battle</h3>
-      <p>Turn based boxing.</p>
-    </a>
-  </div>
-    
-  <div class="card">
-    <a href="./car.html">
-      <h3>Car Dodger</h3>
-      <p>Swipe left/right and dodge incoming traffic.</p>
-    </a>
-  </div>
-
-  <div class="card">
-    <a href="./space.html">
-      <h3>UFO Destructo</h3>
-      <p>Take down UFO's.</p>
-    </a>
-  </div>
-    
-  <!-- Add more local pages here -->
-</section>
 
 </body>
 </html>
