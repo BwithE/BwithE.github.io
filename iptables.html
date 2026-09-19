@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPTables Cyber Training Gym</title>
+    <title>IPTables Cyber Training</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome for Icons -->
@@ -67,36 +67,81 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col font-sans selection:bg-cyan-500 selection:text-black">
+<body class="min-h-screen flex flex-col font-sans selection:bg-cyan-500 selection:text-black" onload="initApp()">
 
-    <header class="bg-cyber-800/80 backdrop-blur border-b border-cyber-600/50 sticky top-0 z-50 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
-        <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-lg bg-cyber-accent/10 border border-cyber-accent flex items-center justify-center text-cyber-accent text-xl glow-accent">
-                <i class="fa-solid fa-shield-halved"></i>
+    <!-- Header & Navigation Bar -->
+    <header class="bg-cyber-800/90 backdrop-blur border-b border-cyber-600/50 sticky top-0 z-50">
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+            
+            <!-- Logo / Brand -->
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-lg bg-cyber-accent/10 border border-cyber-accent flex items-center justify-center text-cyber-accent text-xl glow-accent shrink-0">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-sm sm:text-lg tracking-wide text-white flex items-center gap-1.5 flex-wrap">
+                        IPTABLES <span class="text-cyber-accent font-mono text-[10px] sm:text-xs px-2 py-0.5 rounded border border-cyber-accent/40 bg-cyber-accent/10">Cyber Training</span>
+                    </h1>
+                    <p class="text-[11px] sm:text-xs text-slate-400 hidden sm:block">Interactive Firewall Rule Crafting Simulator</p>
+                </div>
             </div>
-            <div>
-                <h1 class="font-bold text-lg tracking-wide text-white flex items-center gap-2">
-                    IPTABLES <span class="text-cyber-accent font-mono text-xs px-2 py-0.5 rounded border border-cyber-accent/40 bg-cyber-accent/10">TRAINING GYM</span>
-                </h1>
-                <p class="text-xs text-slate-400">Interactive Firewall Rule Crafting Simulator</p>
+
+            <!-- Desktop Navigation Links (HOME | IPTABLES | IPIP | SSH | DOCKER) -->
+            <nav class="hidden md:flex items-center space-x-1 font-mono text-xs font-semibold">
+                <a href="#home" onclick="navSelect('HOME')" id="nav-home" class="px-3 py-2 rounded-lg text-cyber-accent bg-cyber-accent/10 border border-cyber-accent/40 transition">HOME</a>
+                <a href="#iptables" onclick="navSelect('IPTABLES')" id="nav-iptables" class="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-cyber-700/50 transition">IPTABLES</a>
+                <a href="#ipip" onclick="navSelect('IPIP')" id="nav-ipip" class="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-cyber-700/50 transition">IPIP</a>
+                <a href="#ssh" onclick="navSelect('SSH')" id="nav-ssh" class="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-cyber-700/50 transition">SSH</a>
+                <a href="#docker" onclick="navSelect('DOCKER')" id="nav-docker" class="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-cyber-700/50 transition">DOCKER</a>
+            </nav>
+            
+            <!-- Quick Stats & Mobile Menu Toggle Button -->
+            <div class="flex items-center space-x-3">
+                <div class="hidden lg:flex items-center space-x-3 text-sm">
+                    <div class="bg-cyber-700/60 border border-cyber-600 px-3 py-1.5 rounded-xl flex items-center space-x-2">
+                        <span class="text-slate-400 text-xs"><i class="fa-solid fa-trophy text-amber-400 mr-1"></i> Score:</span>
+                        <span id="score-display" class="font-mono font-bold text-cyber-accent text-sm">0 / 0</span>
+                    </div>
+                    <div class="bg-cyber-700/60 border border-cyber-600 px-3 py-1.5 rounded-xl flex items-center space-x-2">
+                        <span class="text-slate-400 text-xs"><i class="fa-solid fa-check-double text-green-400 mr-1"></i> Done:</span>
+                        <span id="completed-display" class="font-mono font-bold text-green-400 text-sm">0%</span>
+                    </div>
+                </div>
+
+                <button onclick="resetCurrentExercise()" class="hidden sm:flex bg-cyber-700 hover:bg-cyber-600 border border-slate-600 text-slate-200 px-3 py-1.5 rounded-xl text-xs font-medium transition items-center gap-1.5">
+                    <i class="fa-solid fa-rotate-right"></i> Reset
+                </button>
+
+                <!-- Mobile Hamburger Toggle Button -->
+                <button onclick="toggleMobileMenu()" class="md:hidden bg-cyber-700/80 border border-cyber-600 text-cyber-accent p-2 rounded-xl text-lg focus:outline-none transition">
+                    <i id="menu-icon" class="fa-solid fa-bars"></i>
+                </button>
             </div>
         </div>
-        
-        <div class="flex items-center space-x-6 text-sm">
-            <div class="bg-cyber-700/60 border border-cyber-600 px-4 py-2 rounded-xl flex items-center space-x-3">
-                <span class="text-slate-400"><i class="fa-solid fa-trophy text-amber-400 mr-1.5"></i> Score:</span>
-                <span id="score-display" class="font-mono font-bold text-cyber-accent text-base">0 / 0</span>
+
+        <!-- Collapsible Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-cyber-900/95 border-t border-cyber-600/50 px-4 py-4 flex flex-col space-y-3 font-mono text-xs">
+            <div class="flex flex-col space-y-1">
+                <span class="text-[10px] text-slate-500 uppercase tracking-widest px-2 mb-1">Navigation</span>
+                <a href="#home" onclick="navSelect('HOME'); toggleMobileMenu();" class="px-3 py-2 rounded-lg text-cyber-accent bg-cyber-accent/10 border border-cyber-accent/30">HOME</a>
+                <a href="#iptables" onclick="navSelect('IPTABLES'); toggleMobileMenu();" class="px-3 py-2 rounded-lg text-slate-300 hover:bg-cyber-800">IPTABLES</a>
+                <a href="#ipip" onclick="navSelect('IPIP'); toggleMobileMenu();" class="px-3 py-2 rounded-lg text-slate-300 hover:bg-cyber-800">IPIP</a>
+                <a href="#ssh" onclick="navSelect('SSH'); toggleMobileMenu();" class="px-3 py-2 rounded-lg text-slate-300 hover:bg-cyber-800">SSH</a>
+                <a href="#docker" onclick="navSelect('DOCKER'); toggleMobileMenu();" class="px-3 py-2 rounded-lg text-slate-300 hover:bg-cyber-800">DOCKER</a>
             </div>
-            <div class="bg-cyber-700/60 border border-cyber-600 px-4 py-2 rounded-xl flex items-center space-x-3">
-                <span class="text-slate-400"><i class="fa-solid fa-check-double text-green-400 mr-1.5"></i> Completed:</span>
-                <span id="completed-display" class="font-mono font-bold text-green-400 text-base">0%</span>
+            <div class="pt-3 border-t border-cyber-700 flex flex-col gap-2">
+                <div class="flex items-center justify-between text-slate-300 px-2">
+                    <span>Score: <strong id="score-display-mob" class="text-cyber-accent">0 / 0</strong></span>
+                    <span>Completed: <strong id="completed-display-mob" class="text-green-400">0%</strong></span>
+                </div>
+                <button onclick="resetCurrentExercise(); toggleMobileMenu();" class="w-full bg-cyber-700 text-slate-200 py-2 rounded-lg text-center font-medium">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> Reset Exercise
+                </button>
             </div>
-            <button onclick="resetCurrentExercise()" class="bg-cyber-700 hover:bg-cyber-600 border border-slate-600 text-slate-200 px-3 py-2 rounded-xl text-xs font-medium transition flex items-center gap-1.5">
-                <i class="fa-solid fa-rotate-right"></i> Reset Exercise
-            </button>
         </div>
     </header>
 
+    <!-- Main Content Grid Layout -->
     <div class="flex-1 flex flex-col lg:flex-row max-w-[1600px] w-full mx-auto p-4 sm:p-6 gap-6">
         
         <!-- Sidebar Navigation -->
@@ -129,7 +174,7 @@
                     </ul>
                 </div>
                 <div class="mt-6 pt-4 border-t border-cyber-700 text-center text-xs text-slate-500">
-                    IPTables Gym v2.4 • Secure Linux Lab
+                    IPTables v0.2 • Secure Linux Lab
                 </div>
             </div>
         </aside>
@@ -146,24 +191,24 @@
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 relative">
-                    <!-- Box 1: Client -->
+                    <!-- PC-1: Client -->
                     <div class="bg-cyber-900/80 border border-cyber-600 rounded-xl p-4 flex flex-col items-center text-center relative overflow-hidden group hover:border-cyber-accent transition">
                         <div class="absolute top-0 left-0 right-0 h-1 bg-cyan-500"></div>
                         <div class="w-12 h-12 rounded-full bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-xl mb-3">
                             <i class="fa-solid fa-laptop"></i>
                         </div>
-                        <h4 class="font-bold text-white text-sm">Box 1 (Client)</h4>
+                        <h4 class="font-bold text-white text-sm">PC-1 (Client)</h4>
                         <span class="font-mono text-xs text-cyan-400 mt-1 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/50">192.168.100.20</span>
                         <p class="text-xs text-slate-400 mt-2">External client zone requesting services.</p>
                     </div>
 
-                    <!-- Box 2: Firewall -->
+                    <!-- FIREWALL: Firewall -->
                     <div class="bg-cyber-900/80 border border-cyber-purple/50 rounded-xl p-4 flex flex-col items-center text-center relative overflow-hidden group hover:border-cyber-purple transition glow-accent">
                         <div class="absolute top-0 left-0 right-0 h-1 bg-purple-500"></div>
                         <div class="w-12 h-12 rounded-full bg-purple-500/10 border border-purple-500/40 flex items-center justify-center text-purple-400 text-xl mb-3">
                             <i class="fa-solid fa-shield-cat"></i>
                         </div>
-                        <h4 class="font-bold text-white text-sm">Box 2 (Firewall Gateway)</h4>
+                        <h4 class="font-bold text-white text-sm">FIREWALL (Gateway)</h4>
                         <div class="flex flex-col gap-1 mt-1 w-full">
                             <span class="font-mono text-[11px] text-purple-300 bg-purple-950/60 px-2 py-0.5 rounded border border-purple-800/50">INT: 192.168.100.30</span>
                             <span class="font-mono text-[11px] text-purple-300 bg-purple-950/60 px-2 py-0.5 rounded border border-purple-800/50">EXT: 172.16.200.30</span>
@@ -171,13 +216,13 @@
                         <p class="text-xs text-slate-400 mt-2">Packet filtering & NAT router node.</p>
                     </div>
 
-                    <!-- Box 3: Server -->
+                    <!-- SERVER-2: Server -->
                     <div class="bg-cyber-900/80 border border-cyber-600 rounded-xl p-4 flex flex-col items-center text-center relative overflow-hidden group hover:border-cyber-accent transition">
                         <div class="absolute top-0 left-0 right-0 h-1 bg-emerald-500"></div>
                         <div class="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-xl mb-3">
                             <i class="fa-solid fa-server"></i>
                         </div>
-                        <h4 class="font-bold text-white text-sm">Box 3 (Internal Server)</h4>
+                        <h4 class="font-bold text-white text-sm">SERVER-2 (Internal Server)</h4>
                         <span class="font-mono text-xs text-emerald-400 mt-1 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/50">172.16.200.40</span>
                         <p class="text-xs text-slate-400 mt-2">Protected backend application server.</p>
                     </div>
@@ -202,7 +247,6 @@
                     <!-- Dynamic question cards will be injected here -->
                 </div>
             </section>
-
         </main>
     </div>
 
@@ -219,27 +263,27 @@
                 title: "Exercise 1: Client Services, Web Restriction & SNAT",
                 rules: [
                     {
-                        prompt: "1. Allow box1 to SSH and FTP into Firewall",
+                        prompt: "1. Allow PC-1 to SSH and FTP into FIREWALL",
                         answers: [
                             "iptables -A INPUT -p tcp --dport 22 -s 192.168.100.20 -j ACCEPT",
                             "iptables -A INPUT -p tcp --dport 21 -s 192.168.100.20 -j ACCEPT"
                         ]
                     },
                     {
-                        prompt: "2. Allow SSH and TELNET from box3 into the Firewall",
+                        prompt: "2. Allow SSH and TELNET from SERVER-2 into FIREWALL",
                         answers: [
                             "iptables -A INPUT -p tcp --dport 22 -s 172.16.200.40 -j ACCEPT",
                             "iptables -A INPUT -p tcp --dport 23 -s 172.16.200.40 -j ACCEPT"
                         ]
                     },
                     {
-                        prompt: "3. Reject all users on the Firewall from doing any web-requests to box3",
+                        prompt: "3. Reject all users on FIREWALL from doing any web-requests to SERVER-2",
                         answers: [
                             "iptables -A OUTPUT -p tcp --dport 80 -d 172.16.200.40 -j REJECT"
                         ]
                     },
                     {
-                        prompt: "4. Modify all web-requests from box1 going to box3 to the source address of 172.16.200.30 (Include NAT and FORWARD rules)",
+                        prompt: "4. Modify all web-requests from PC-1 going to SERVER-2 to the source address of 172.16.200.30",
                         answers: [
                             "iptables -t nat -A POSTROUTING -p tcp --dport 80 -s 192.168.100.20 -j SNAT --to-source 172.16.200.30",
                             "iptables -A FORWARD -p tcp --dport 80 -d 172.16.200.40 -j ACCEPT",
@@ -247,7 +291,7 @@
                         ]
                     },
                     {
-                        prompt: "5. Allow all communications on the Loopback of the firewall",
+                        prompt: "5. Allow all communications on the Loopback of FIREWALL",
                         answers: [
                             "iptables -A INPUT -i lo -j ACCEPT"
                         ]
@@ -266,20 +310,19 @@
                 title: "Exercise 2: TFTP, DNAT Port Redirection & FTP Block",
                 rules: [
                     {
-                        prompt: "1. Allow box1 to SSH into the Firewall",
+                        prompt: "1. Allow PC-1 to SSH into FIREWALL",
                         answers: [
                             "iptables -A INPUT -p tcp --dport 22 -s 192.168.100.20 -j ACCEPT"
                         ]
                     },
                     {
-                        prompt: "2. Allow box1 to connect to box3 with tftp",
+                        prompt: "2. Allow PC-1 to connect to SERVER-2 with TFTP",
                         answers: [
-                            "iptables -A FORWARD -p udp --dport 69 -d 172.16.200.40 -j ACCEPT",
-                            "iptables -A FORWARD -p udp --sport 69 -s 172.16.200.40 -j ACCEPT"
+                            "iptables -A FORWARD -p udp --dport 69 -d 172.16.200.40 -j ACCEPT"
                         ]
                     },
                     {
-                        prompt: "3. Redirect all tcp traffic hitting the Firewall from box1 on port 8080 to box3 on port 80",
+                        prompt: "3. Redirect all TCP traffic hitting FIREWALL from PC-1 on port 8080 to SERVER-2 on port 80",
                         answers: [
                             "iptables -t nat -A PREROUTING -p tcp --dport 8080 -s 192.168.100.20 -j DNAT --to-destination 172.16.200.40:80",
                             "iptables -A FORWARD -p tcp --dport 80 -d 172.16.200.40 -j ACCEPT",
@@ -287,13 +330,13 @@
                         ]
                     },
                     {
-                        prompt: "4. Drop all users on the Firewall from using ftp on box1",
+                        prompt: "4. Drop all users on FIREWALL from using ftp on PC-1",
                         answers: [
                             "iptables -A OUTPUT -p tcp --dport 21 -d 192.168.100.20 -j DROP"
                         ]
                     },
                     {
-                        prompt: "5. Allow all communications on the Loopback of the firewall",
+                        prompt: "5. Allow all communications on the Loopback of FIREWALL",
                         answers: [
                             "iptables -A INPUT -i lo -j ACCEPT"
                         ]
@@ -312,26 +355,26 @@
                 title: "Exercise 3: Custom Port Redirection, DNS Forwarding & Policy Drop",
                 rules: [
                     {
-                        prompt: "1. Allow ssh from box1 into the Firewall",
+                        prompt: "1. Allow ssh from PC-1 into FIREWALL",
                         answers: [
                             "iptables -A INPUT -p tcp --dport 22 -s 192.168.100.20 -j ACCEPT"
                         ]
                     },
                     {
-                        prompt: "2. Drop ssh traffic coming from box3 into the Firewall",
+                        prompt: "2. Drop ssh traffic coming from SERVER-2 into FIREWALL",
                         answers: [
                             "iptables -A INPUT -p tcp --dport 22 -s 172.16.200.40 -j DROP"
                         ]
                     },
                     {
-                        prompt: "3. Allow dns traffic from box1 to box3",
+                        prompt: "3. Allow dns traffic from PC-1 to SERVER-2",
                         answers: [
                             "iptables -A FORWARD -p udp --dport 53 -d 172.16.200.40 -j ACCEPT",
                             "iptables -A FORWARD -p udp --sport 53 -s 172.16.200.40 -j ACCEPT"
                         ]
                     },
                     {
-                        prompt: "4. Redirect all tcp traffic from box1 hitting the Firewall on port 7777 to box3 on port 1234",
+                        prompt: "4. Redirect all TCP traffic from PC-1 hitting FIREWALL on port 7777 to SERVER-2 on port 1234",
                         answers: [
                             "iptables -t nat -A PREROUTING -p tcp --dport 7777 -s 192.168.100.20 -j DNAT --to-destination 172.16.200.40:1234",
                             "iptables -A FORWARD -p tcp --dport 1234 -d 172.16.200.40 -j ACCEPT",
@@ -339,13 +382,13 @@
                         ]
                     },
                     {
-                        prompt: "5. Reject all Firewall users from using TELNET on box3",
+                        prompt: "5. Reject all FIREWALL users from using TELNET on SERVER-2",
                         answers: [
                             "iptables -A OUTPUT -p tcp --dport 23 -d 172.16.200.40 -j REJECT"
                         ]
                     },
                     {
-                        prompt: "6. Allow all communications on the Loopback of the firewall",
+                        prompt: "6. Allow all communications on the Loopback of FIREWALL",
                         answers: [
                             "iptables -A INPUT -i lo -j ACCEPT"
                         ]
@@ -362,12 +405,40 @@
         ];
 
         let currentExerciseId = 1;
-        // userProgress state stores locked answers: { exId: { ruleIndex: { subIndex: true } } }
         let userProgress = {};
+        let toastTimeout = null;
 
         function initApp() {
             renderSidebarButtons();
             loadExercise(currentExerciseId);
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('menu-icon');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                icon.className = 'fa-solid fa-xmark';
+            } else {
+                menu.classList.add('hidden');
+                icon.className = 'fa-solid fa-bars';
+            }
+        }
+
+        function navSelect(sectionName) {
+            // Update UI feedback for top menu selection
+            const links = ['HOME', 'IPTABLES', 'IPIP', 'SSH', 'DOCKER'];
+            links.forEach(l => {
+                const el = document.getElementById(`nav-${l.toLowerCase()}`);
+                if (el) {
+                    if (l === sectionName) {
+                        el.className = 'px-3 py-2 rounded-lg text-cyber-accent bg-cyber-accent/10 border border-cyber-accent/40 transition';
+                    } else {
+                        el.className = 'px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-cyber-700/50 transition';
+                    }
+                }
+            });
+            showToast(`Switched to module view: ${sectionName}`, 'info');
         }
 
         function renderSidebarButtons() {
@@ -440,6 +511,11 @@
 
             document.getElementById('score-display').textContent = `${solved} / ${total}`;
             document.getElementById('completed-display').textContent = `${percent}%`;
+            
+            const mobScore = document.getElementById('score-display-mob');
+            const mobComp = document.getElementById('completed-display-mob');
+            if (mobScore) mobScore.textContent = `${solved} / ${total}`;
+            if (mobComp) mobComp.textContent = `${percent}%`;
         }
 
         function loadExercise(id) {
@@ -476,10 +552,10 @@
                             </div>
                             <div class="flex items-center gap-2">
                                 ${!isSolved ? `
-                                    <button onclick="validateRule(${ruleIdx}, ${subIdx})" class="bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 px-4 py-2.5 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1.5 whitespace-nowrap">
+                                    <button onclick="validateRule(${ruleIdx},${subIdx})" class="bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 px-4 py-2.5 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1.5 whitespace-nowrap">
                                         <i class="fa-solid fa-check-to-slot"></i> Check
                                     </button>
-                                    <button onclick="showHint(${ruleIdx}, ${subIdx})" class="bg-cyber-700/60 hover:bg-cyber-600 text-slate-400 hover:text-slate-200 border border-cyber-600 px-3 py-2.5 rounded-lg text-xs transition title="Hint">
+                                    <button onclick="showHint(${ruleIdx},${subIdx})" class="bg-cyber-700/60 hover:bg-cyber-600 text-slate-400 hover:text-slate-200 border border-cyber-600 px-3 py-2.5 rounded-lg text-xs transition" title="Hint">
                                         <i class="fa-solid fa-lightbulb text-amber-400"></i>
                                     </button>
                                 ` : `
@@ -519,9 +595,7 @@
                 return;
             }
 
-            // Case-insensitive or flexible space matching
             if (userVal.toLowerCase() === correctVal.toLowerCase()) {
-                // Success
                 if (!userProgress[currentExerciseId]) {
                     userProgress[currentExerciseId] = {};
                 }
@@ -544,9 +618,36 @@
         function showHint(ruleIdx, subIdx) {
             const ex = exercisesData.find(e => e.id === currentExerciseId);
             const correct = ex.rules[ruleIdx].answers[subIdx];
-            // Provide a masked hint or partial string
-            const hintSnippet = correct.substring(0, Math.min(18, correct.length)) + '...';
-            showToast(`Hint: Starts with "${hintSnippet}"`, 'info');
+            
+            // Define the standard prefixes to check against
+            const prefixes = [
+                "iptables -t nat -A PREROUTING",
+                "iptables -t nat -A POSTROUTING",
+                "iptables -A INPUT",
+                "iptables -A FORWARD",
+                "iptables -A OUTPUT",
+                "iptables -P INPUT",
+                "iptables -P FORWARD"
+            ];
+
+            // Find which base prefix applies to this rule
+            let matchedPrefix = "";
+            for (let prefix of prefixes) {
+                if (correct.startsWith(prefix)) {
+                    matchedPrefix = prefix;
+                    break;
+                }
+            }
+
+            // If a standard prefix applies, show it along with extra useful context (like protocol or target)
+            if (matchedPrefix) {
+                // Extract extra flags like protocol (-p) or target (-j) if present to make the hint more helpful
+                showToast(`Hint: Starts with "${matchedPrefix}"`, 'info');
+            } else {
+                // Fallback generic hint if no standard prefix matches
+                const hintSnippet = correct.substring(0, Math.min(22, correct.length)) + '...';
+                showToast(`Hint: "${hintSnippet}"`, 'info');
+            }
         }
 
         function fillAllAnswers() {
@@ -579,6 +680,8 @@
             const iconEl = document.getElementById('toast-icon');
             const msgEl = document.getElementById('toast-message');
 
+            if (toastTimeout) clearTimeout(toastTimeout);
+
             msgEl.textContent = message;
             if (type === 'success') {
                 iconEl.innerHTML = '<i class="fa-solid fa-circle-check text-green-400"></i>';
@@ -591,13 +694,10 @@
                 toast.className = 'fixed bottom-6 right-6 transform translate-y-0 opacity-100 transition-all duration-300 z-50 bg-cyber-800 border border-cyan-500 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 glow-accent';
             }
 
-            setTimeout(() => {
+            toastTimeout = setTimeout(() => {
                 toast.className = 'fixed bottom-6 right-6 transform translate-y-24 opacity-0 transition-all duration-300 z-50 bg-cyber-800 border border-cyber-accent text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3';
-            }, 3000);
+            }, 3500);
         }
-
-        // Initialize app on load
-        window.onload = initApp;
     </script>
 </body>
 </html>
