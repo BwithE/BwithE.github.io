@@ -86,7 +86,7 @@
                 </div>
             </div>
 
-            <!-- Desktop Navigation Links (HOME | IPTABLES | IPIP | SSH | DOCKER) -->
+            <!-- Desktop Navigation Links -->
             <nav class="hidden md:flex items-center space-x-1 font-mono text-xs font-semibold">
                 <a href="#home" onclick="navSelect('HOME')" id="nav-home" class="px-3 py-2 rounded-lg text-cyber-accent bg-cyber-accent/10 border border-cyber-accent/40 transition">HOME</a>
                 <a href="#iptables" onclick="navSelect('IPTABLES')" id="nav-iptables" class="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-cyber-700/50 transition">IPTABLES</a>
@@ -122,9 +122,6 @@
                 <span class="text-[10px] text-slate-500 uppercase tracking-widest px-2 mb-1">Navigation</span>
                 <a href="#home" onclick="navSelect('HOME'); toggleMobileMenu();" class="px-3 py-2 rounded-lg text-cyber-accent bg-cyber-accent/10 border border-cyber-accent/30">HOME</a>
                 <a href="#iptables" onclick="navSelect('IPTABLES'); toggleMobileMenu();" class="px-3 py-2 rounded-lg text-slate-300 hover:bg-cyber-800">IPTABLES</a>
-                <a href="#ipip" onclick="navSelect('IPIP'); toggleMobileMenu();" class="px-3 py-2 rounded-lg text-slate-300 hover:bg-cyber-800">IPIP</a>
-                <a href="#ssh" onclick="navSelect('SSH'); toggleMobileMenu();" class="px-3 py-2 rounded-lg text-slate-300 hover:bg-cyber-800">SSH</a>
-                <a href="#docker" onclick="navSelect('DOCKER'); toggleMobileMenu();" class="px-3 py-2 rounded-lg text-slate-300 hover:bg-cyber-800">DOCKER</a>
             </div>
             <div class="pt-3 border-t border-cyber-700 flex flex-col gap-2">
                 <div class="flex items-center justify-between text-slate-300 px-2">
@@ -199,7 +196,7 @@
                         <p class="text-xs text-slate-400 mt-2">External client zone requesting services.</p>
                     </div>
 
-                    <!-- FIREWALL: Firewall -->
+                    <!-- FIREWALL: Gateway -->
                     <div class="bg-cyber-900/80 border border-cyber-purple/50 rounded-xl p-4 flex flex-col items-center text-center relative overflow-hidden group hover:border-cyber-purple transition glow-accent">
                         <div class="absolute top-0 left-0 right-0 h-1 bg-purple-500"></div>
                         <div class="w-12 h-12 rounded-full bg-purple-500/10 border border-purple-500/40 flex items-center justify-center text-purple-400 text-xl mb-3">
@@ -423,8 +420,7 @@
         }
 
         function navSelect(sectionName) {
-            // Update UI feedback for top menu selection
-            const links = ['HOME', 'IPTABLES', 'IPIP', 'SSH', 'DOCKER'];
+            const links = ['HOME', 'IPTABLES'];
             links.forEach(l => {
                 const el = document.getElementById(`nav-${l.toLowerCase()}`);
                 if (el) {
@@ -541,6 +537,10 @@
                                     id="input-${ruleIdx}-${subIdx}"
                                     value="${isSolved ? ans : ''}"
                                     ${isSolved ? 'disabled' : ''}
+                                    spellcheck="false"
+                                    autocorrect="off"
+                                    autocapitalize="none"
+                                    autocomplete="off"
                                     placeholder="Enter iptables command..."
                                     class="w-full font-mono text-xs sm:text-sm bg-cyber-800 border ${isSolved ? 'border-green-500/60 text-green-300 bg-green-950/10' : 'border-cyber-600 text-slate-200 focus:border-cyber-accent'} rounded-lg px-3 py-2.5 outline-none transition"
                                     onkeydown="if(event.key === 'Enter') validateRule(${ruleIdx}, ${subIdx})"
@@ -636,9 +636,8 @@
                 }
             }
 
-            // If a standard prefix applies, show it along with extra useful context (like protocol or target)
+            // If a standard prefix applies, show it along with extra useful context
             if (matchedPrefix) {
-                // Extract extra flags like protocol (-p) or target (-j) if present to make the hint more helpful
                 showToast(`Hint: Starts with "${matchedPrefix}"`, 'info');
             } else {
                 // Fallback generic hint if no standard prefix matches
